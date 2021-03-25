@@ -123,17 +123,17 @@ def breadthFirstSearch(problem):
     expanded = []
     #Aqui empiezo a comentar lo que hace, lo anterior no se para que sirve
 
-    while not fringe.isEmpty():
-        node, actions, curCost = fringe.pop()
+    while not fringe.isEmpty(): #Mientras no esté vacía la lista
+        node, actions, curCost = fringe.pop() #el nodo, los pasos a seguir y el costo entre los nodos se pone al principio de la lista
 
-        if(not node in expanded):
-            expanded.append(node)
+        if(not node in expanded): #Si el nodo no se ha expandido
+            expanded.append(node) #Expandir el nodo
 
-            if problem.isGoalState(node):
+            if problem.isGoalState(node): #Si se ha llegado al final devolver los pasos
                 return actions
 
-            for child, direction, cost in problem.getSuccessors(node):
-                fringe.push((child, actions+[direction], curCost + [cost]))
+            for child, direction, cost in problem.getSuccessors(node): #Para los hijos, direccion y coste de los sucesores
+                fringe.push((child, actions+[direction], curCost + [cost])) #Añadir a la lista todo lo que pone
 
     return []
 
