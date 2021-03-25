@@ -118,25 +118,23 @@ def breadthFirstSearch(problem):
     #Búsqueda primero en amplitud (BFS): procesa todos los nodos por encima de la solución más superficial. Explorando
     #los nodos vecinos en profundidad antes de pasar a los nodos del siguiente nivel de profundidad.
 
-    startState = problem.getStartState()
     fringe = util.Stack()
-    fringe.push( (startState, [], 0) )
-    closedSet = []
+    fringe.push( (problem.getStartState(), [], []) )
+    expanded = []
     #Aqui empiezo a comentar lo que hace, lo anterior no se para que sirve
 
     while not fringe.isEmpty():
-        node = fringe.pop()
+        node, actions, curCost = fringe.pop()
 
-        if problem.isGoalState(node[0]):
-            return node[1]
+        if(not node in expanded):
+            expanded.append(node)
 
-        if not node[0] in closedSet:
-            for succesor in problem.getSuccessors(node[0]):
-                if not succesor[0] in closedSet:
-                    newSucessor = (succesor[0], node[1] + [succesor[1]], succesor[2])
-                    fringe.push(newSucessor)
-            closedSet.append(node[0])
-    
+            if problem.isGoalState(node):
+                return actions
+
+            for child, direction, cost in problem.getSuccessors(node):
+                fringe.push((child, actions+[direction], curCost + [cost]))
+
     return []
 
     util.raiseNotDefined()
