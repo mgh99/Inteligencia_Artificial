@@ -86,7 +86,12 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
+    
     "* YOUR CODE HERE *"
+    
+    #Búsqueda en profundidad (DFS): algoritmo de búsqueda no informada, para recorrer todos los nodos de
+    #manera ordenada pero no uniforme.
+    
     temp = problem.getStartState()
     past = []
     fringe = util.Stack() #STACK -> a last-in-first-out (lifo)
@@ -110,10 +115,29 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "* YOUR CODE HERE *"
 
-    #PRIMERA BUSQUEDA EN AMPLITUD
+    #Búsqueda primero en amplitud (BFS): procesa todos los nodos por encima de la solución más superficial. Explorando
+    #los nodos vecinos en profundidad antes de pasar a los nodos del siguiente nivel de profundidad.
 
+    startState = problem.getStartState()
+    fringe = util.Stack()
+    fringe.push( (startState, [], 0) )
+    closedSet = []
+    #Aqui empiezo a comentar lo que hace, lo anterior no se para que sirve
 
+    while not fringe.isEmpty():
+        node = fringe.pop()
 
+        if problem.isGoalState(node[0]):
+            return node[1]
+
+        if not node[0] in closedSet:
+            for succesor in problem.getSuccessors(node[0]):
+                if not succesor[0] in closedSet:
+                    newSucessor = (succesor[0], node[1] + [succesor[1]], succesor[2])
+                    fringe.push(newSucessor)
+            closedSet.append(node[0])
+    
+    return []
 
     util.raiseNotDefined()
 
