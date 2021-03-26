@@ -288,6 +288,15 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        #EJERCICIO 5
+
+        #ESTO ES NUEVO, FUNCIONA
+            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+            #RECUERDA TODO EN INGLES"""
+        #***************************************************************
+        self.right = right
+        self.top = top
+        #******************************************************************
 
     def getStartState(self):
         """
@@ -295,6 +304,17 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        #EJERCICIO 5
+
+        #ESTO ES NUEVO, FUNCIONA
+            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+            #RECUERDA TODO EN INGLES"""
+        #*************************************************************************
+        allCorners = (False, False, False, False)
+        start = (self.startingPosition, allCorners)
+        return start
+        #**************************************************************************
+
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,6 +322,17 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        #EJERCICIO 5
+
+        #ESTO ES NUEVO, FUNCIONA
+            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+            #RECUERDA TODO EN INGLES"""
+        #*******************************************************************
+        corners = state[1]
+        boolean = corners[0] and corners[1] and corners[2] and corners[3]
+        return boolean
+
+        #**********************************************************************
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -325,6 +356,36 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            #EJERCICIO 5
+
+             #ESTO ES NUEVO, FUNCIONA
+            """FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+            RECUERDA TODO EN INGLES"""
+
+            #*************************************************************************
+            x,y = state[0]
+            holdCorners = state[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            newCorners = ()
+            nextState = (nextx, nexty)
+            if not hitsWall:
+                if nextState in self.corners:
+                    if nextState == (self.right, 1):
+                        newCorners = [True, holdCorners[1], holdCorners[2], holdCorners[3]]
+                    elif nextState == (self.right, self.top):
+                        newCorners = [holdCorners[0], True, holdCorners[2], holdCorners[3]]
+                    elif nextState == (1, self.top):
+                        newCorners = [holdCorners[0], holdCorners[1], True, holdCorners[3]]
+                    elif nextState == (1,1):
+                        newCorners = [holdCorners[0], holdCorners[1], holdCorners[2], True]
+                    successor = ((nextState, newCorners), action,  1)
+                else:
+                    successor = ((nextState, holdCorners), action, 1)
+                successors.append(successor)
+        
+        #**********************************************************************************
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +421,27 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    #EJERCICIO 6
+
+    #ESTO ES NUEVO, FUNCIONA
+        #  """FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+        # RECUERDA TODO EN INGLES
+        # mi nota segun el pdf sería 1/3 pq está cerca del 2000
+
+    #************************************************************************
+    max_distance, max_corner_pos = 0, (-1, -1)
+    for corner in list(corners):
+        # Cache the mazeDistance in the heuristicInfo dictionary as it will be used for multiple branches
+        if (position, corner) not in problem.heuristicInfo:
+            problem.heuristicInfo[(position, corner)] = mazeDistance(position, corner, problem.startingGameState)
+        distance = problem.heuristicInfo[(position, corner)]
+        if distance > max_distance:
+            max_distance = distance
+            max_corner_pos = corner
+    return max_distance
+
+    #************************************************************************
+    #return 0 # Default to trivial solution => CREO QUE SE QUITA PERO NO ESTOY SEGURA
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -454,7 +535,25 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    #EJERCICIO 7
+
+    #ESTO ES NUEVO, FUNCIONA
+        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+        #RECUERDA TODO EN INGLES"""
+        #creo que tendría una puntuación de 5/4 porque es menor que 7000 mis nodos expandidos (4137)
+
+    #*************************************************************************************
+    distances = []
+    for food in foodGrid.asList():
+        distance = mazeDistance(position, food, problem.startingGameState)
+        distances.append(distance)
+
+    if not distances:
+        return 0
+    else:
+        return max(distances)
+    #*************************************************************************************
+    #return 0 => CREO QUE SE QUITA PERO NO ESTOY SEGURA
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -485,6 +584,14 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        #EJERCICIO 8
+        #ESTO ES NUEVO, FUNCIONA
+        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+        #RECUERDA TODO EN INGLES"""
+
+        #**********************************************************************
+        return search.breadthFirstSearch(problem)
+        #**********************************************************************
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -521,6 +628,18 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        #EJERCICIO 8
+        #ESTO ES NUEVO, FUNCIONA
+        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
+        #RECUERDA TODO EN INGLES"""
+
+        #********************************************************************************
+        food = self.food
+        if (food[x][y] == True):
+            return True
+        else:
+            return False
+        #********************************************************************************
         util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
