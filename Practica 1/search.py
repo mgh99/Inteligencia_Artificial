@@ -92,36 +92,84 @@ def depthFirstSearch(problem):
     #Búsqueda en profundidad (DFS): algoritmo de búsqueda no informada, para recorrer todos los nodos de
     #manera ordenada pero no uniforme. 
 
+    """
+    EXERCISE 1
+
+    Deep Search (DFS): uninformed search algorithm, 
+    to search through all nodes in an ordered but non-uniform manner. 
+
+    He utilizado una lista porque para la búsqueda en profundidad 
+
+    If my list isn't empty, I delete the path and the temp. Then it's added temp to the list.
+    If I have found the goal I get back the path traveled.
+    For each child that has a successor and if the child isn't in the list add it.
+
+    ------------------------------------------------------------------------------------
+    To test this part here are the commands available for it:
+        python pacman.py -l tinyMaze -p SearchAgent (500)
+        python pacman.py -l mediumMaze -p SearchAgent (380)
+        python pacman.py -l bigMaze -z .5 -p SearchAgent (380)
+    -------------------------------------------------------------------------------------
+
+    """
+
     #************************************************************************************************
     temp = problem.getStartState()
     past = []
-    fringe = util.Stack() #STACK -> a last-in-first-out (lifo)
+    fringe = util.Stack() 
     fringe.push((temp, []))
 
-    #Aqui empiezo a comentar lo que hace, lo anterior no se para que sirve
-    while not fringe.isEmpty(): # As long as the lifo list is empty
+    while not fringe.isEmpty(): 
 
-        temp, path = fringe.pop() # The temp and path variables are placed at the beginning of the list
-        past.append(temp) #no sé lo que hace
+        temp, path = fringe.pop() 
+        past.append(temp) 
 
-        if problem.isGoalState(temp): # 
+        #Si se ha llegado a la meta devuelve el camino
+        if problem.isGoalState(temp): 
             return path 
 
-        for child in problem.getSuccessors(temp): # For each child and their successors 
-            if child[0] not in past: # Si 
+        #Si los hijos tienen sucesores y no están añadidos a la lista se añaden
+        for child in problem.getSuccessors(temp): 
+            if child[0] not in past: 
                 fringe.push((child[0], path + [child[1]]))
 
     #************************************************************************************************
-    
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    #EJERCICIO 2
 
-    #Búsqueda primero en amplitud (BFS): procesa todos los nodos por encima de la solución más superficial. Explorando
-    #los nodos vecinos en profundidad antes de pasar a los nodos del siguiente nivel de profundidad.
+    """
+    EXERCISE 2
+
+    Breadth first search (BFS): processes all nodes above the next highest shallowest solution.
+    Exploring neighbouring nodes in depth before moving on to nodes at the next depth level. 
+
+    He utilizado una cola porque para la búsqueda en amplitud 
+
+        As long as the empty fringe is not available, the directions and get_state_xy are removed from the queue.
+        If the goal has been located at the selected coordinates, the path is returned. 
+    But for each: address, cost and successor, where if the state has not been visited, 
+    the successor is visited and added to the queue and the: successor, address and address position 
+    are added to the fringe.
+
+    ------------------------------------------------------------------------------------
+    To test this part here are the commands available for it:
+        python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs (442)
+        python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5 (300)
+
+        python eightpuzzle.py
+    -------------------------------------------------------------------------------------
+
+        If we analyse the scores given by the dfs vs the bfs we see that in the mediumMaze it has increased
+    from 380 to 442, this could be because the pacman takes longer to execute. 
+        But if we analyse the bigMaze, in the dfs it had a score of 380 and the bfs of 300, 
+    which means that the costs have decreased.
+        eightpuzzle solves the 7 moves.
+
+    """
 
     #****************************************************************************************************
     fringe = util.Queue()
@@ -139,12 +187,15 @@ def breadthFirstSearch(problem):
             return directions
 
         else:
+
+            #For successor, direction and cost, if they have successors with coordinates, the following are tracked
+            #the visited states
             for successor, direction, cost in problem.getSuccessors(get_state_xy):
+
                 # Track visited states
                 if not successor in visited_states:
                     visited_states.append(successor)
                     fringe.push((successor, directions + [direction]))
-                    #print(directions)
                 
     return []
     #*************************************************************************************************
@@ -154,6 +205,27 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    """
+    EXERCISE 3
+
+    Deep Search (DFS): uninformed search algorithm, 
+    to search through all nodes in an ordered but non-uniform manner. 
+
+    He utilizado una lista porque para la búsqueda en profundidad 
+
+    If my list isn't empty, I delete the path and the temp. Then it's added temp to the list.
+    If I have found the goal I get back the path traveled.
+    For each child that has a successor and if the child isn't in the list add it.
+
+    ------------------------------------------------------------------------------------
+    To test this part here are the commands available for it:
+        python pacman.py -l tinyMaze -p SearchAgent (500)
+        python pacman.py -l mediumMaze -p SearchAgent (380)
+        python pacman.py -l bigMaze -z .5 -p SearchAgent (380)
+    -------------------------------------------------------------------------------------
+
+    """
     #EJERCICIO 3
 
      #BUSQUEDA POR COSTE UNIFORME
