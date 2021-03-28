@@ -149,9 +149,9 @@ def breadthFirstSearch(problem):
 
     He utilizado una cola porque para la búsqueda en amplitud 
 
-        As long as the empty fringe is not available, the directions and get_state_xy are removed from the queue.
+        As long as the empty fringe isn't available, the directions and get_state_xy are removed from the queue.
         If the goal has been located at the selected coordinates, the path is returned. 
-    But for each: address, cost and successor, where if the state has not been visited, 
+    But for each: address, cost and successor, where if the state hasn't been visited, 
     the successor is visited and added to the queue and the: successor, address and address position 
     are added to the fringe.
 
@@ -209,26 +209,28 @@ def uniformCostSearch(problem):
     """
     EXERCISE 3
 
-    Deep Search (DFS): uninformed search algorithm, 
-    to search through all nodes in an ordered but non-uniform manner. 
+    Uniform Cost Search (UCS): algoritmo de búsqueda no informada  para recorrer el camino de costo
+    mínimo entre un nodo raíz y un nodo destino. La búsqueda comienza por el nodo raíz y 
+    continúa visitando el siguiente nodo que tiene menor costo total desde la raíz.
 
-    He utilizado una lista porque para la búsqueda en profundidad 
+    He utilizado una cola con prioridad porque para la búsqueda de coste uniforme 
 
-    If my list isn't empty, I delete the path and the temp. Then it's added temp to the list.
-    If I have found the goal I get back the path traveled.
-    For each child that has a successor and if the child isn't in the list add it.
+        As long as the fringe isn't empty: the fringe of the next state is removed from the queue with priority.
+        If the path is found, it's returned and the successor gets the next state.
+       For each successor, it is assigned a position in the queue and a check is made to verify that this state
+    hasn't been visited before, and if it hasn't, it's added and the states are also updated.
+        Finally, as long as the final state is different from the initial state, it tracks the state, 
+    adds it to the queue with priority and the actions are added to a reserved list.
 
     ------------------------------------------------------------------------------------
     To test this part here are the commands available for it:
-        python pacman.py -l tinyMaze -p SearchAgent (500)
-        python pacman.py -l mediumMaze -p SearchAgent (380)
-        python pacman.py -l bigMaze -z .5 -p SearchAgent (380)
+        python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs (442)
+        python pacman.py -l mediumDottedMaze -p StayEastSearchAgent (646)
+        python pacman.py -l mediumScaryMaze -p StayWestSearchAgent
     -------------------------------------------------------------------------------------
 
     """
-    #EJERCICIO 3
 
-     #BUSQUEDA POR COSTE UNIFORME
     #*********************************************************************************
     priority_queue = util.PriorityQueue()
     trace = {}
@@ -243,14 +245,11 @@ def uniformCostSearch(problem):
 
     while not priority_queue.isEmpty():
         
-        # arrive at state
         curr_state = priority_queue.pop()
 
-        # check if state is goal
         if problem.isGoalState(curr_state):
             break
 
-        # get possible next states
         successors = problem.getSuccessors(curr_state)
         
         for successor in successors:
@@ -277,12 +276,13 @@ def uniformCostSearch(problem):
     # back track
     actions = []
     backtrack_state = curr_state # the goal state
+
     while backtrack_state != start_state:
-        prev_state, action, _ = trace[backtrack_state]
+        prev_state, action, _ = trace[backtrack_state] 
         actions.append(action)
         backtrack_state = prev_state
-    actions = list(reversed(actions))
 
+    actions = list(reversed(actions))
     return actions
     #**********************************************************************************
 
@@ -298,9 +298,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    #EJERCICIO 4
 
-    #A*
+    
+    """
+    EXERCISE 4
+
+    A* (astar): represents the heuristic value of the node to be evaluated from the current node, n,
+    to the end, and the actual cost of the path to reach that node, n, from the initial node.
+
+    He utilizado una cola porque para la búsqueda A* porque 
+
+        As long as the fringe is not empty: if the goal is found with the selected coordinates, 
+    the path travelled is returned.  
+        If the nodes have not been visited, they are added to the queue with the selected priority.
+        If the coordinates haven't passed through the visited nodes, first the list of actions 
+    is passed by reference with the addresses added to it. And secondly, the coordinates, 
+    the address stored in the queue, the position where it's to be stored, the cost of the actions 
+    required for the path and the heuristic are added to the queue.
+
+    ------------------------------------------------------------------------------------
+    To test this part here are the commands available for it:
+        python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic (300)
+    -------------------------------------------------------------------------------------
+
+    """
+
     #**********************************************************************************
     fringe = util.PriorityQueue()
     start_node = problem.getStartState()
@@ -308,6 +330,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     visited_nodes = []
     fringe.push( (start_node, [], 0), start_heuristic)
     directions = []
+
     while not fringe.isEmpty():
         get_xy, directions, get_cost = fringe.pop()
 
