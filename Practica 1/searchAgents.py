@@ -288,11 +288,14 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 5
+        """
+        EXERCISE 5
 
-        #ESTO ES NUEVO, FUNCIONA
-            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-            #RECUERDA TODO EN INGLES"""
+        Finding all corners through the A* algorithm. Part 1/3
+
+        The variables of the CornersProblem class are declared for itself.
+
+        """
         #***************************************************************
         self.right = right
         self.top = top
@@ -304,11 +307,18 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 5
+        
+        """
+        EXERCISE 5
 
-        #ESTO ES NUEVO, FUNCIONA
-            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-            #RECUERDA TODO EN INGLES"""
+        Finding all corners through the A* algorithm. Part 2/3
+
+            We initialise all the corners to false, as it is a square there are 4 corners therefore 4 False positions.
+            Therefore 4 positions False. And then we declare start so that it starts in the desired position
+        with all corners. 
+            All this is defined in the start function in a state.
+        """
+        
         #*************************************************************************
         allCorners = (False, False, False, False)
         start = (self.startingPosition, allCorners)
