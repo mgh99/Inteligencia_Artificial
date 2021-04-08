@@ -291,7 +291,7 @@ class CornersProblem(search.SearchProblem):
         """
         EXERCISE 5
 
-        Finding all corners through the A* algorithm. Part 1/3
+        Finding all corners through the A* algorithm. Part 1/4
 
         The variables of the CornersProblem class are declared for itself.
 
@@ -311,7 +311,7 @@ class CornersProblem(search.SearchProblem):
         """
         EXERCISE 5
 
-        Finding all corners through the A* algorithm. Part 2/3
+        Finding all corners through the A* algorithm. Part 2/4
 
             We initialise all the corners to false, as it is a square there are 4 corners therefore 4 False positions.
             Therefore 4 positions False. And then we declare start so that it starts in the desired position
@@ -332,11 +332,16 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 5
 
-        #ESTO ES NUEVO, FUNCIONA
-            #FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-            #RECUERDA TODO EN INGLES"""
+        """
+        EXERCISE 5
+
+        Finding all corners through the A* algorithm. Part 3/4
+
+        In the function of the state's goal is:
+            Initialises the corners to a state of 1. The 4 corners are 
+            declared so that when the final end path is encountered the position is returned.
+        """
         #*******************************************************************
         corners = state[1]
         boolean = corners[0] and corners[1] and corners[2] and corners[3]
@@ -366,20 +371,32 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            #EJERCICIO 5
+            """
+            EXERCISE 5
 
-             #ESTO ES NUEVO, FUNCIONA
-            """FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-            RECUERDA TODO EN INGLES"""
+            Finding all corners through the A* algorithm. Part 4/4
+
+                If it has no clues from the wall then it checks if the next state has corners,
+            if it does, then it checks which of the 4 corners it's and returns the successor to the 
+            one in question it's.
+
+            ******************************************************************************************
+            To check that it works, we can check these commands:
+
+            python pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+            python pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem 
+            ******************************************************************************************   
+            """
 
             #*************************************************************************
-            x,y = state[0]
-            holdCorners = state[1]
+            x,y = state[0] 
+            holdCorners = state[1] 
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             newCorners = ()
             nextState = (nextx, nexty)
+
             if not hitsWall:
                 if nextState in self.corners:
                     if nextState == (self.right, 1):
@@ -431,24 +448,31 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    #EJERCICIO 6
+    """
+            EXERCISE 6
 
-    #ESTO ES NUEVO, FUNCIONA
-        #  """FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-        # RECUERDA TODO EN INGLES
-        # mi nota segun el pdf sería 1/3 pq está cerca del 2000
+            Corner problems: Heuristics. 
+
+            We declare the maximum distance and the maximum number of corners. For each corner there is then a
+        list of corners. Store the distance of the maze in the heuristic information dictionary,
+        as it will be used for multiple branches and then return the maximum distance.
+
+        ******************************************************************************************
+        To check that it works, we can check these commands:
+
+        python pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
+        -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic 
+        ******************************************************************************************   
+    """
 
     #************************************************************************
-    max_distance, max_corner_pos = 0, (-1, -1)
-    for corner in list(corners):
-        # Cache the mazeDistance in the heuristicInfo dictionary as it will be used for multiple branches
-        if (position, corner) not in problem.heuristicInfo:
-            problem.heuristicInfo[(position, corner)] = mazeDistance(position, corner, problem.startingGameState)
-        distance = problem.heuristicInfo[(position, corner)]
-        if distance > max_distance:
-            max_distance = distance
-            max_corner_pos = corner
-    return max_distance
+
+    position = state[0] 
+    cornersIndex = state[1] 
+    
+    if not cornersIndex: 
+        return 0  
+    return max([util.manhattanDistance(position, corners[idx]) for idx in cornersIndex])
 
     #************************************************************************
     #return 0 # Default to trivial solution => CREO QUE SE QUITA PERO NO ESTOY SEGURA
@@ -545,14 +569,23 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    #EJERCICIO 7
+    """
+            EXERCISE 7
 
-    #ESTO ES NUEVO, FUNCIONA
-        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-        #RECUERDA TODO EN INGLES"""
-        #creo que tendría una puntuación de 5/4 porque es menor que 7000 mis nodos expandidos (4137)
+            Eating all the points 
 
-    #*************************************************************************************
+            As it's about eating all the points, then for the food in the list of all food items the distance is declared as the distance of the maze with position parameters. 
+        food, the distance is declared as the distance of the maze with position parameters,
+        food and the starting point of the problem, in order to return the distance to be added to the list.
+            But if the distance isn't found, 0 or without the maximum of the distances is returned.
+
+        ******************************************************************************************
+        To check that it works, we can check these commands:
+
+        python pacman.py -l testSearch -p AStarFoodSearchAgent
+        -p SearchAgent -a fn=astar,prob=FoodSearchProblem,heuristic=foodHeuristic 
+        ******************************************************************************************   
+    """
     distances = []
     for food in foodGrid.asList():
         distance = mazeDistance(position, food, problem.startingGameState)
@@ -563,7 +596,7 @@ def foodHeuristic(state, problem):
     else:
         return max(distances)
     #*************************************************************************************
-    #return 0 => CREO QUE SE QUITA PERO NO ESTOY SEGURA
+    #return 0 
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -594,11 +627,13 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 8
-        #ESTO ES NUEVO, FUNCIONA
-        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-        #RECUERDA TODO EN INGLES"""
+        """
+        EXERCISE 8
 
+        Sub-optimal search. Part 1/2 
+
+        Returns the search for the path to the nearest point.   
+        """
         #**********************************************************************
         return search.breadthFirstSearch(problem)
         #**********************************************************************
@@ -638,11 +673,20 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 8
-        #ESTO ES NUEVO, FUNCIONA
-        #"""FALTA COMENTARLO Y ENTENDER TODO LO QUE HACE
-        #RECUERDA TODO EN INGLES"""
+        """
+            EXERCISE 8
 
+            Sub-optimal search. Part 2/2  
+
+        When the food is in the position of the selected coordinates, it has been found.
+        if not, it hasn't been found
+           
+        ******************************************************************************************
+        To check that it works, we can check these commands:
+
+        python pacman.py -l bigSearch -p ClosestDotSearchAgent -z .5 
+        ******************************************************************************************   
+        """
         #********************************************************************************
         food = self.food
         if (food[x][y] == True):
