@@ -98,8 +98,6 @@ def depthFirstSearch(problem):
     Deep Search (DFS): uninformed search algorithm, 
     to search through all nodes in an ordered but non-uniform manner. 
 
-    He utilizado una lista porque para la búsqueda en profundidad 
-
     If my list isn't empty, I delete the path and the temp. Then it's added temp to the list.
     If I have found the goal I get back the path traveled.
     For each child that has a successor and if the child isn't in the list add it.
@@ -146,8 +144,6 @@ def breadthFirstSearch(problem):
 
     Breadth first search (BFS): processes all nodes above the next highest shallowest solution.
     Exploring neighbouring nodes in depth before moving on to nodes at the next depth level. 
-
-    He utilizado una cola porque para la búsqueda en amplitud 
 
         As long as the empty fringe isn't available, the directions and get_state_xy are removed from the queue.
         If the goal has been located at the selected coordinates, the path is returned. 
@@ -212,8 +208,6 @@ def uniformCostSearch(problem):
     Uniform Cost Search (UCS): algoritmo de búsqueda no informada  para recorrer el camino de costo
     mínimo entre un nodo raíz y un nodo destino. La búsqueda comienza por el nodo raíz y 
     continúa visitando el siguiente nodo que tiene menor costo total desde la raíz.
-
-    He utilizado una cola con prioridad porque para la búsqueda de coste uniforme 
 
         As long as the fringe isn't empty: the fringe of the next state is removed from the queue with priority.
         If the path is found, it's returned and the successor gets the next state.
@@ -306,8 +300,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     A* (astar): represents the heuristic value of the node to be evaluated from the current node, n,
     to the end, and the actual cost of the path to reach that node, n, from the initial node.
 
-    He utilizado una cola porque para la búsqueda A* porque 
-
         As long as the fringe is not empty: if the goal is found with the selected coordinates, 
     the path travelled is returned.  
         If the nodes have not been visited, they are added to the queue with the selected priority.
@@ -361,4 +353,5 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
 
