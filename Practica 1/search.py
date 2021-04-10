@@ -153,17 +153,11 @@ def breadthFirstSearch(problem):
 
     ------------------------------------------------------------------------------------
     To test this part here are the commands available for it:
-        python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs (442)
-        python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5 (300)
+        python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs        # 442 -> score
+        python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5     # 300 -> score
 
         python eightpuzzle.py
     -------------------------------------------------------------------------------------
-
-        If we analyse the scores given by the dfs vs the bfs we see that in the mediumMaze it has increased
-    from 380 to 442, this could be because the pacman takes longer to execute. 
-        But if we analyse the bigMaze, in the dfs it had a score of 380 and the bfs of 300, 
-    which means that the costs have decreased.
-        eightpuzzle solves the 7 moves.
 
     """
 
@@ -218,8 +212,8 @@ def uniformCostSearch(problem):
 
     ------------------------------------------------------------------------------------
     To test this part here are the commands available for it:
-        python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs (442)
-        python pacman.py -l mediumDottedMaze -p StayEastSearchAgent (646)
+        python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs           # 442 -> score
+        python pacman.py -l mediumDottedMaze -p StayEastSearchAgent       # 646 -> score
         python pacman.py -l mediumScaryMaze -p StayWestSearchAgent
     -------------------------------------------------------------------------------------
 
@@ -310,7 +304,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     ------------------------------------------------------------------------------------
     To test this part here are the commands available for it:
-        python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic (300)
+        python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic 
     -------------------------------------------------------------------------------------
 
     """
