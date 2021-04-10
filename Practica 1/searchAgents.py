@@ -461,7 +461,7 @@ def cornersHeuristic(state, problem):
         To check that it works, we can check these commands:
 
         python pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
-        -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic 
+        python pacman.py -l mediumCorners -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic 
         ******************************************************************************************   
     """
 
@@ -583,7 +583,9 @@ def foodHeuristic(state, problem):
         To check that it works, we can check these commands:
 
         python pacman.py -l testSearch -p AStarFoodSearchAgent
-        -p SearchAgent -a fn=astar,prob=FoodSearchProblem,heuristic=foodHeuristic 
+        python pacman.py -l testSearch -p SearchAgent -a fn=astar,prob=FoodSearchProblem,heuristic=foodHeuristic 
+        python pacman.py -l trickySearch -p AStarFoodSearchAgent
+
         ******************************************************************************************   
     """
     distances = []
