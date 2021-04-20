@@ -137,22 +137,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         Returns the minimax action from the current gameState using self.depth
         and self.evaluationFunction.
-
         Here are some method calls that might be useful when implementing minimax.
-
         gameState.getLegalActions(agentIndex):
         Returns a list of legal actions for an agent
         agentIndex=0 means Pacman, ghosts are >= 1
-
         gameState.generateSuccessor(agentIndex, action):
         Returns the successor game state after an agent takes an action
-
         gameState.getNumAgents():
         Returns the total number of agents in the game
-
         gameState.isWin():
         Returns whether or not the game state is a winning state
-
         gameState.isLose():
         Returns whether or not the game state is a losing state
         """
@@ -220,6 +214,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         util.raiseNotDefined()
 
        # util.raiseNotDefined() , no se si puedeo quitarlo
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -314,84 +309,81 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
     """
+    pacmanIndex = 0
     def getAction(self, gameState):
         """
-        Returns the expectimax action using self.depth and self.evaluationFunction
-
-        All ghosts should be modeled as choosing uniformly at random from their
-        legal moves.
+          Returns the expectimax action using self.depth and self.evaluationFunction
+          All ghosts should be modeled as choosing uniformly at random from their
+          legal moves.
         """
         "*** YOUR CODE HERE ***"
         #EJERCICIO 4
         #EXPECTIMAX
 
-        numberGhost = gameState.getNumAgents() - 1
+        depth = 0
+        indexAgent = 0
+        val = self.valor(gameState, indexAgent, depth)
+        return val[0]
 
-        def maxAgent(gameState, depth):
+    def valor(self, gameState, indexAgent, depth):
 
-            #Si el juego ha terminado 
-            if gameState.isWin() or gameState.isLose():
-                return  self.evaluationFunction(gameState)
+        if indexAgent >= gameState.getNumAgents():
+          indexAgent = 0
+          depth = depth + 1
 
-            #Inicializamos la mejor accion y la mejor puntuacion
-            # i = -INF en el maximo
-            bestAction = None
-            bestScore = float ("-inf")
-            legalActions = gameState.getLegalActions(0) #0 pq así es como se indexa con el pacman
+        #Si la profundidad es igual a la propia se devuelve gameState
+        if depth == self.depth:
+          return self.evaluationFunction(gameState)
 
-            #Para cada aacion tenemos que obtener la puntuacion maxima en el minimo de movimientos
-            for action in legalActions:
-                successorGameState = gameState.generateSuccessor(0, action)
-                i = minAgent(successorGameState, depth, 1)
+        if indexAgent == self.pacmanIndex:
+          return self.maxAgent(gameState, indexAgent, depth) # Se devuelve la mejor maxima puntuacion
+        else:
+          return self.expValor(gameState, indexAgent, depth)
 
-                # Actualizamos la mejor puntuacion maxima
-                if(i > bestScore):
-                    bestScore = i
-                    bestAction = action
-                
-            # La llamada recursiva ha terminado cuando: depth = profundidad inicial y entonces se devuelve la mejor accion
-            if depth == 0:
-                return bestAction
-            else: # Si tenemos diferentes profundidades, tenemos que devolver la puntuacion
-                return bestScore
+    def expValor(self, gameState, indexAgent, depth):
+
+        i = ["unknown", 0]
+
+        if not gameState.getLegalActions(indexAgent):
+          return self.evaluationFunction(gameState)
+
+        probability = 1.0 / len(gameState.getLegalActions(indexAgent))
+
+        for action in gameState.getLegalActions(indexAgent):
+          if action == "Stop":
+            continue
+
+          retVal = self.valor(gameState.generateSuccessor(indexAgent, action), indexAgent + 1, depth)
+
+          if type(retVal) is tuple:
+            retVal = retVal[1]
+
+          i[1] = i[1] + (retVal * probability)
+          i[0] = action
+
+        return tuple(i)
+
+    def maxAgent (self, gameState, indexAgent, depth):
+        i = ("unknown", -1 * float("inf"))
+
+        if not gameState.getLegalActions(indexAgent):
+          return self.evaluationFunction(gameState)
+
+        for action in gameState.getLegalActions(indexAgent):
+          if action == "Stop":
+            continue
+
+          retVal = self.valor(gameState.generateSuccessor(indexAgent, action), indexAgent + 1, depth)
+          if type(retVal) is tuple:
+            retVal = retVal[1]
+
+          iNew = max(i[1], retVal)
+
+          if iNew is not i[1]:
+            i = (action, iNew)
             
-        def minAgent(gameState, depth, ghost):
-
-            # Si el juego ha terminado 
-            if gameState.isWin() or gameState.isLose():
-                return  self.evaluationFunction(gameState)
-            
-            # Inicializamos la puntuacion
-            # i = INF en el minimo
-            bestScore = float("inf")
-            average = 0.0 # average = promedio o media
-            legalActions = gameState.getLegalActions(ghost) # Acciones permitidas para los fantasmas seleccionados
-
-            for action in legalActions:
-                successorGameState = gameState.generateSuccessor(ghost, action)
-
-                if(ghost < numberGhost):
-                    # Todavia quedan fantasmas por mover
-                    # Si se usa el fantasma selccionado + 1 es que has selecionado el siguiente
-                    i = minAgent(successorGameState, depth, ghost + 1 ) # Devuelve la puntuacion
-                else:# El último fantasma -> turno del pacman
-
-                    if(depth == self.depth - 1): # Si se trata de un estado terminal
-                        i = self.evaluationFunction(successorGameState)
-                        average = average + i
-                    else: # Si no se trata de un estado terminal
-                        i = maxAgent(successorGameState, depth + 1) #Devuelve la puntuacion
-                        average = average + i
-            
-            #Actualizamos el promedio de la puntuacion
-            bestScore = average / float(len(legalActions))
-            return bestScore
-        
-        #SE IMPRIME LA ACCION
-        return maxAgent(gameState, 0) # depth = 0
-        util.raiseNotDefined()
-
-
+        return i
+        #util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):
     """
