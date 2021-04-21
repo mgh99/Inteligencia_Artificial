@@ -74,26 +74,27 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 1
-        #AGENTE REFLEJO
+        # EXERCISE 1
+        # Reflex agent
 
-        distancia = []  # Distancia de Manhattan
-        listaComida = currentGameState.getFood().asList() # Lista de comida
-        posicaoPacman = list(successorGameState.getPacmanPosition())  # Posicion de Pacman
+        range = []  # Distance to Manhattan
+        listFood = currentGameState.getFood().asList() # List of food
+        positionPacman = list(successorGameState.getPacmanPosition())  # Posicion de Pacman
 
         if action == 'Stop':
           return -float("inf")
 
-        for ghostState in newGhostStates: # Estado dos Fantasmas
-          if ghostState.getPosition() == tuple(posicaoPacman) and ghostState.scaredTimer is 0:
+        for ghostState in newGhostStates: # State of 2 ghosts
+          if ghostState.getPosition() == tuple(positionPacman) and ghostState.scaredTimer is 0:
             return -float("inf")
 
-        for comida in listaComida:
-          x = -1 * abs(comida[0] - posicaoPacman[0])
-          y = -1 * abs(comida[1] - posicaoPacman[1])
-          distancia.append(x + y)
+        # Calculates the position on the x-axix and y-axis of the food
+        for food in listFood:
+          x = -1 * abs(food[0] - positionPacman[0])
+          y = -1 * abs(food[1] - positionPacman[1])
+          range.append(x + y)
 
-        return max(distancia)
+        return max(range)
         #return successorGameState.getScore()
 
 
@@ -131,7 +132,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     Your minimax agent (question 2) 
     """
-    #PREGUNTA 2
+    #EXERCISE 2
 
     def getAction(self, gameState):
         """
@@ -151,9 +152,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 2 
-        #MINIMAX: tiene que trabajar para cualquier numero de fantasmas, con varias capas minimas
-        #NO FUNCIONA AL PASAR EL AUTOGRADER
+        #EXERCISE 2 
+        #MINIMAX
+        #DOESN'T WORK WHEN RUNNING THE autograder.py AND I DON'T KNOW WHY
 
         numberGhost = gameState.getNumAgents() - 1
         bestAction = Directions.STOP
@@ -161,59 +162,59 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         def maxAgent(gameState, depth, numberGhost):
 
-            #Si el juego se ha terminado
+            # If the game is over
             if gameState.isWin() or gameState.isLose() or depth == 0:
                 return self.evaluationFunction(gameState)
 
-            # i = -INF en el maximo
+            # i = -INF in the max
             i = -(float("inf"))
-            #Se pone a 0 porque es el nexo con el pacman
-            legalActions = gameState.getLegalActions(0)
+            legalActions = gameState.getLegalActions(0) # Set to 0 because it indexes with pacman
 
-            #Para cada accion se intenta obtener la maxima puntuacion para el minimo de movimientos
+            # For each action we try to obtain the maximum score for the minimum number of moves
             for action in legalActions: 
                 i = max(i, minAgent(gameState.generateSuccessor(0, action), depth - 1, 1, numberGhost))
-            return i #La recursividad termina cuando =>depth devuelve la mejor accion
+            return i #The recursion ends when => depth returns the best action
 
         def minAgent(gameState, depth, agentindex, numberGhost):
 
             if gameState.isWin() or gameState.isLose() or depth == 0:
                 return self.evaluationFunction(gameState)
 
-            # i = INF en el minimo   
+            # i = INF in min   
             i = float("inf")
-            legalActions = gameState.getLegalActions(agentindex) #Acciones perimitidas para seleccionar un nexo con el agente
+            legalActions = gameState.getLegalActions(agentindex) # Actions allowed to index with the agent
 
             if agentindex == numberGhost:
 
                 for action in legalActions:
-                    #Si se trata de un terminal
+                    # If it's a terminal
                     i = min(i, maxAgent(gameState.generateSuccessor(agentindex, action), depth - 1, numberGhost))
-            else:# El ultimo fantasma
+            else:# The last ghost
 
                 for action in legalActions:
-                    #Si no se trata de un terminal
+                    # If it isn't a terminal
                     i = min(i, minAgent(gameState.generateSuccessor(agentindex, action), depth, agentindex + 1, numberGhost)) #Se pone +1 para seleccionar el siguiente fantasma
-            return i #devuleve la puntuación
+            return i # Return score
 
         legalActions = gameState.getLegalActions()
         
         
         for action in legalActions:
 
-            nextState = gameState.generateSuccessor(0, action) #La profundidad es 0
+            nextState = gameState.generateSuccessor(0, action) #depth = 0
             prevScore = score
-            #Se actualiza la puntuación a la mejor del maximo
+
+            # The score is updated to the best of the maximum
             score = max(score, minAgent(nextState, self.depth, 1, numberGhost))
 
             if score > prevScore:
                 bestAction = action
 
-        return bestAction # Devuelve la mejor puntuación
+        return bestAction # Return the best action
 
         util.raiseNotDefined()
 
-       # util.raiseNotDefined() , no se si puedeo quitarlo
+       # util.raiseNotDefined() 
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -225,8 +226,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 3 
-        #PODA ALFA-BETA si que funciona
+        #EXERCISE 3 
+        #ALPHA-BETA AGENT
 
         numberGhost = gameState.getNumAgents() - 1
         alpha = float("-inf")
@@ -234,22 +235,22 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         def maxAgent(gameState, depth, alpha, beta):
 
-          #Si el juego se ha terminado
+          # If the game is over
           if gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
 
-          # Inicializamos la mejor accion y la mejor puntuacion
-          # i = -INF en el maximo
+          # We start with the best action and the best score
+          # i = -INF in the max
           bestAction = None
           bestScore = float("-inf")
-          legalActions = gameState.getLegalActions(0) # es 0 pq es la forma de indexarse con el pacman
+          legalActions = gameState.getLegalActions(0) # is 0 because it's the way to index with pacman
           
-          #Para cada accion se pude obtener la maxima puntuacion con el minimo de movimientos
+          # For each action the maximum score can be obtained with the minimum number of moves
           for action in legalActions:
             successorGameState = gameState.generateSuccessor(0, action)
             i = minAgent(successorGameState, depth, 1, alpha, beta)
 
-            # Se actualiza a la mejor maxima puntuacion
+            # Updates to the best score
             if(i > bestScore):
               bestScore = i
               bestAction = action
@@ -261,7 +262,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           # Para que la llamada recursiva termine => depth = profundidad inicial, que devuelve la mejor accion
           if depth == 0:
             return bestAction
-          else: # Si se trata de diferentes profundidades se necesita devolver la puntuación
+          else: # For the recursive call to terminate => depth = initial depth, which returns the best action
             return bestScore
 
         def minAgent(gameState, depth, ghost, alpha, beta):
@@ -269,28 +270,28 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           if gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
 
-          # Inicializamos la puntuacion
-          # i = INF en el minimo
+          # We start the score
+          # i = INF in the min
           bestScore = float("inf")
-          legalActions = gameState.getLegalActions(ghost) # Las acciones perimitidas para los fantasma que existan en ese momento
+          legalActions = gameState.getLegalActions(ghost) # The actions allowed for the ghosts that exist at the moment
           
           for action in legalActions:
             successorGameState = gameState.generateSuccessor(ghost, action)
 
             if(ghost < numberGhost):
-              # Quedan fantasmas por moverse
-              # Si se usa +1 es para seleccionar el siguiente fantasma
-              i = minAgent(successorGameState, depth, ghost + 1, alpha, beta) # devuelve la puntuación
+              # Ghosts still to move
+              # If +1 is used it's to select the next ghost.
+              i = minAgent(successorGameState, depth, ghost + 1, alpha, beta) # Returns the score
             else:
 
-              # Si se trata del ultimo fantasma se devuleve el camino hasta el pacman
-              if(depth == self.depth - 1): # Si estamos en un estado terminal
+              # If it is the last ghost, the path to the pacman is returned.
+              if(depth == self.depth - 1): # If it is a terminal
                 i = self.evaluationFunction(successorGameState)
               else:
-                # Si no es un estado terminal
-                i = maxAgent(successorGameState, depth + 1, alpha, beta) # Y devuleve la puntuacion
+                # If it isn't a terminal
+                i = maxAgent(successorGameState, depth + 1, alpha, beta) # Returns the score
             
-            # Se actualiza a la mejor puntuacion minima
+            # Updates to best minimum score
             bestScore = min(i, bestScore)
             
             if(bestScore < alpha):
@@ -300,7 +301,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           return bestScore
 
 
-        # AQUI SE DEVUELVE LA ACCION
+        # HERE THE ACTION IS RETURNED
         return maxAgent(gameState, 0, alpha, beta) # depth = 0
 
         util.raiseNotDefined()
@@ -317,7 +318,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        #EJERCICIO 4
+        #EXERCISE 4
         #EXPECTIMAX
 
         depth = 0
@@ -331,12 +332,12 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           indexAgent = 0
           depth = depth + 1
 
-        #Si la profundidad es igual a la propia se devuelve gameState
+        # If depth is equal to own depth, gameState is returned
         if depth == self.depth:
           return self.evaluationFunction(gameState)
 
         if indexAgent == self.pacmanIndex:
-          return self.maxAgent(gameState, indexAgent, depth) # Se devuelve la mejor maxima puntuacion
+          return self.maxAgent(gameState, indexAgent, depth) # The best max score is returned.
         else:
           return self.expValor(gameState, indexAgent, depth)
 
@@ -347,6 +348,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         if not gameState.getLegalActions(indexAgent):
           return self.evaluationFunction(gameState)
 
+        # The probability of finding the path is calculated
         probability = 1.0 / len(gameState.getLegalActions(indexAgent))
 
         for action in gameState.getLegalActions(indexAgent):
@@ -361,7 +363,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           i[1] = i[1] + (retVal * probability)
           i[0] = action
 
-        return tuple(i)
+        return tuple(i) # Returns a list of all values
 
     def maxAgent (self, gameState, indexAgent, depth):
         i = ("unknown", -1 * float("inf"))
@@ -393,28 +395,31 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
+    #EXERCISE 5
+    # Evaluation function
 
-    distanceToFood = [] # Distancia de Manhattan
-    distanceToNearestGhost = [] #Distancia al fantasma mas cercano
+    distanceToFood = [] # Distance to Manhattan
+    distanceToNearestGhost = [] # Distance to nearest ghost
 
     foodList = currentGameState.getFood().asList() 
     ghostStates = currentGameState.getGhostStates()
     capsuleList = currentGameState.getCapsules()
     numberOfScaredGhosts = 0
 
-    pacmanPos = list(currentGameState.getPacmanPosition()) #Posicion del pacman
+    pacmanPos = list(currentGameState.getPacmanPosition()) # Position of the agent (pacman)
 
-    # Para cada posicion del fantasma
+    # For each position of the ghost
     for ghostState in ghostStates:
 
-        #Si el temporizador de los fantasmas asustados esta en 0
+        # If the timer of the frightened ghosts is set to 0
         if ghostState.scaredTimer is 0: 
             numberOfScaredGhosts = numberOfScaredGhosts + 1 
             distanceToNearestGhost.append(0)
             continue
 
         ghostCoord = ghostState.getPosition()
-        #Posiciones en el eje x e y de los fantasmas
+
+        # Positions on the x- and y-axis of the ghosts
         x = abs(ghostCoord[0] - pacmanPos[0]) 
         y = abs(ghostCoord[1] - pacmanPos[1])
 
@@ -428,7 +433,7 @@ def betterEvaluationFunction(currentGameState):
       y = abs(food[1] - pacmanPos[1])
       distanceToFood.append(-1 * (x + y))
 
-    #Si no queda distancia hasta la comida entonces se añade a la lista en la posicion 0
+    # If there is no distance left to the food then it is added to the list in position 0.
     if not distanceToFood:
       distanceToFood.append(0)
 
