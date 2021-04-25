@@ -39,30 +39,33 @@ def question3a():
 
 # EJERCICIO 3 parte 2/5
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.1 # He cambiado None por 0.1
+    answerNoise = 0.1  # He cambiado None por 0.1
+    answerLivingReward = 0.7 # He cambiado None por 0.7
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# EJERCICIO 3 parte 3/5
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.9  # He cambiado None por 0.9
+    answerNoise = float(0)  # He cambiado None por float(0)
+    answerLivingReward = float(0)  # He cambiado None por float(0)
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# EJERCICIO 3 parte 4/5
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.9  # He cambiado None por 0.9
+    answerNoise = 0.5  # He cambiado None por 0.5
+    answerLivingReward = 1.0  # He cambiado None por 1.0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# EJERCICIO 3 parte 5/5
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    answerDiscount = 0.01  # He cambiado None por 0.01
+    answerNoise = float(0)  # He cambiado None por float(0)
+    answerLivingReward = 100  # He cambiado None por 100
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
