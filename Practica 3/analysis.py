@@ -69,6 +69,8 @@ def question3e():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
+# EJERCICIO 8
+# CRUCE DE PUENTES REVISITADO
 def question8():
     answerEpsilon = None
     answerLearningRate = None
