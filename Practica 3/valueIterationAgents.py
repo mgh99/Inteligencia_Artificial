@@ -59,6 +59,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.values = util.Counter() # A Counter is a dict with default 0
         self.runValueIteration()
 
+
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
@@ -190,32 +191,21 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
 
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
-        #esto es como la parte de arriba
-        # se supone que no hay que hacer nada según el enunciado de la practica
-        # si lo quito funciona igual
-        # para que sirve? Si solo dejo esta parte no unciona
-        # de momento lo dejo pero creo que lo puedo quitar
 
-        """
-        vals = util.Counter()
-        states = self.mdp.getStates()
-
+        # EJERCICIO 4
+        #Tengo que comentarlo aunque funciona no me queda muy claro de lo que hace
         for i in range(self.iterations):
-            currentState = states[i % len(states)]
-            vals = self.values.copy()
-            possibleVals = []
 
-            if self.mdp.isTerminal(currentState):
-                self.values[currentState] = 0
-            elif not self.mdp.isTerminal(currentState):
-                for action in self.mdp.getPossibleActions(currentState):
-                    tempValue = 0
-                    
-                    for t in self.mdp.getTransitionStatesAndProbs(currentState, action):
-                        tempValue += t[1]*(self.mdp.getReward(currentState, action, t[0]) + self.discount * vals[t[0]])
-                    possibleVals.append(tempValue)
-                self.values[currentState] = max(possibleVals)
-        """
+            index = i %  len(self.mdp.getStates())
+            state = self.mdp.getStates()[index]
+            top = self.computeActionFromValues(state)
+
+            if not top:
+                qval = 0
+            else:
+                qval = self.computeQValueFromValues(state, top)
+
+            self.values[state] = qval
 
 
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
