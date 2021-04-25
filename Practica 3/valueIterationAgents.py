@@ -63,6 +63,36 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
 
+        #esto es nuevo pero en la practica no pone nada de añadirlo
+        # Si lo quito deja de funcionar así que lo voy a dejar de momento como provisional
+        
+        # Para el rango de iteraciones seleccionadas pasa lo siguiente
+        for i in range(0,self.iterations):
+            temporal = util.Counter() # El contador
+
+            for s in self.mdp.getStates():
+
+                if self.mdp.isTerminal(s):
+                    temporal[s] = 0
+                else:
+                    maxVal = float("-inf")
+
+                    for action in self.mdp.getPossibleActions(s):
+                        total = 0
+
+                        for nextState, prob in self.mdp.getTransitionStatesAndProbs (s, action):
+
+                            vals = self.values[nextState]
+                            total = total + (prob * (self.mdp.getReward(s,action,nextState) + (self.discount*vals)))
+
+                        maxVal = max(total, maxVal)
+                        temporal[s] = maxVal
+                        print("temporal[state]: ",  temporal[s])
+
+            self.values = temporal
+            print("self.values", self.values)
+            
+
 
     def getValue(self, state):
         """
@@ -82,14 +112,13 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Se comprueba si es el estado final
         endStates = self.mdp.getTransitionStatesAndProbs(state, action)
+        Qvalue = 0
 
-        total = 0
+        for nextState, probs in endStates:
+            Qvalue = Qvalue + (probs * (self.mdp.getReward(state,action,nextState) + (self.discount*self.values[nextState])))
+        return Qvalue
 
-        for nextState, probability in endStates:
-            total = total + (probability * (self.mdp.getReward(state, action, nextState) + (self.discount * self.values[nextState])))
-        return total
-
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
 
     def computeActionFromValues(self, state):
         """
@@ -107,20 +136,20 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Se comprueba que el juego no haya terminado
         if self.mdp.isTerminal(state):
             return None
-        
-        endAction = None
-        maxSum = float ("-inf") # El numero mas pequeño que soporta el programa
+
+        maxSum = float ("-inf") # = val
+        endAction = None # = policy
 
         for i in self.mdp.getPossibleActions(state):
-            temporal = self.computeQValueFromValues(state, i)
 
+            temporal = self.computeQValueFromValues(state, i)
+            
             if temporal >= maxSum:
                 maxSum = temporal
                 endAction = i
-        
         return endAction
 
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
@@ -161,6 +190,33 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
 
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
+        #esto es como la parte de arriba
+        # se supone que no hay que hacer nada según el enunciado de la practica
+        # si lo quito funciona igual
+        # para que sirve? Si solo dejo esta parte no unciona
+        # de momento lo dejo pero creo que lo puedo quitar
+
+        """
+        vals = util.Counter()
+        states = self.mdp.getStates()
+
+        for i in range(self.iterations):
+            currentState = states[i % len(states)]
+            vals = self.values.copy()
+            possibleVals = []
+
+            if self.mdp.isTerminal(currentState):
+                self.values[currentState] = 0
+            elif not self.mdp.isTerminal(currentState):
+                for action in self.mdp.getPossibleActions(currentState):
+                    tempValue = 0
+                    
+                    for t in self.mdp.getTransitionStatesAndProbs(currentState, action):
+                        tempValue += t[1]*(self.mdp.getReward(currentState, action, t[0]) + self.discount * vals[t[0]])
+                    possibleVals.append(tempValue)
+                self.values[currentState] = max(possibleVals)
+        """
+
 
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     """
