@@ -62,13 +62,10 @@ class ValueIterationAgent(ValueEstimationAgent):
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-
-        #esto es nuevo pero en la practica no pone nada de añadirlo
-        # Si lo quito deja de funcionar así que lo voy a dejar de momento como provisional
         
-        # Para el rango de iteraciones seleccionadas pasa lo siguiente
+        # For the selected range of iterations the following happens
         for i in range(0,self.iterations):
-            temporal = util.Counter() # El contador
+            temporal = util.Counter() # The counter
 
             for s in self.mdp.getStates():
 
@@ -107,10 +104,10 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 1
-        # ITERACION DE VALOR
+        # EXERCISE 1 part 1/2
+        # VALUE ITERATION
 
-        # Se comprueba si es el estado final
+        # It's checked if it's the final state
         endStates = self.mdp.getTransitionStatesAndProbs(state, action)
         Qvalue = 0
 
@@ -130,18 +127,17 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 1
-        # ITERACION DE VALOR
+        # EXERCISE 1 part 2/2
+        # VALUE ITERATION
 
-        # Se comprueba que el juego no haya terminado
+        # We check that the game isn't over
         if self.mdp.isTerminal(state):
             return None
 
-        maxSum = float ("-inf") # = val
-        endAction = None # = policy
+        maxSum = float ("-inf") 
+        endAction = None 
 
         for i in self.mdp.getPossibleActions(state):
-
             temporal = self.computeQValueFromValues(state, i)
             
             if temporal >= maxSum:
@@ -191,17 +187,19 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
 
-        # EJERCICIO 4
-        #Tengo que comentarlo aunque funciona no me queda muy claro de lo que hace
+        # EXERCISE 4
+        # ASYNCHRONOUS VALUE ITERATION
+
+        # For the range of interactions required.
         for i in range(self.iterations):
 
-            index = i %  len(self.mdp.getStates())
-            state = self.mdp.getStates()[index]
+            index = i %  len(self.mdp.getStates()) # The modulus of the Markov decision process is calculated.
+            state = self.mdp.getStates()[index] 
             top = self.computeActionFromValues(state)
 
-            if not top:
+            if not top: # If not at the top the value of q is 0.
                 qval = 0
-            else:
+            else: # If not, it's added.
                 qval = self.computeQValueFromValues(state, top)
 
             self.values[state] = qval
@@ -226,41 +224,45 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 5
-        # ITERACION DE VALOR DE BARRIDO PRIORIZADA
-        # Sin hacer
+        # EXERCISE 5
+        # PRIORITISED SCANNING VALUE ITERATION
 
         pq = util.PriorityQueue()
         predecessors = {}
 
-        # Calcula los predecesores en cada estado
+        # We calculate the predecessors in each state.
         for state in self.mdp.getStates():
           if not self.mdp.isTerminal(state):
             for action in self.mdp.getPossibleActions(state):
               for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
+
                 if nextState in predecessors:
                   predecessors[nextState].add(state)
                 else:
                   predecessors[nextState] = {state}
 
-        # Obtiene la diferencia de cada estado y su valor maximo
+        # We obtain the difference of each state and it's maximum value.
         for state in self.mdp.getStates():
           if not self.mdp.isTerminal(state):
             values = []
+
             for action in self.mdp.getPossibleActions(state):
               q_value = self.computeQValueFromValues(state, action)
               values.append(q_value)
-            diff = abs(max(values) - self.values[state])
-            # Se añade a la cola con prioridad al valor más pequeño (min-heap)
-            pq.update(state, - diff)
 
-        # iteración sobre los predecesores y exploración de los estados con mayor diff
+            diff = abs(max(values) - self.values[state])
+            # We add to the queue with priority to the smallest value (min-heap).
+            pq.update(state, -diff)
+
+        # Iterating on the predecessors and exploring the states with the most diff.
         for i in range(self.iterations):
           if pq.isEmpty():
             break
+
           temp_state = pq.pop()
           if not self.mdp.isTerminal(temp_state):
             values = []
+
             for action in self.mdp.getPossibleActions(temp_state):
               q_value = self.computeQValueFromValues(temp_state, action)
               values.append(q_value)
@@ -269,11 +271,13 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
           for p in predecessors[temp_state]:
             if not self.mdp.isTerminal(p):
               values = []
+
               for action in self.mdp.getPossibleActions(p):
                 q_value = self.computeQValueFromValues(p, action)
                 values.append(q_value)
               diff = abs(max(values) - self.values[p])
-              # Se añade a la cola co prioridad si la diferencia es mayor que el ruido tolerado
+
+              # We add to the queue with priority if the difference is greater than the tolerated noise.
               if diff > self.theta:
                 pq.update(p, -diff)
 
