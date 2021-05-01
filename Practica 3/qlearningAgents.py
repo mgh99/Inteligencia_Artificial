@@ -43,7 +43,6 @@ class QLearningAgent(ReinforcementAgent):
         ReinforcementAgent.__init__(self, **args)
 
         "*** YOUR CODE HERE ***" 
-        # Supuestamente no hace falta añadir nada (EJERCICIO 6), pero lo añado para que el resto funcione
         self.QValues = util.Counter()
 
     def getQValue(self, state, action):
@@ -53,9 +52,10 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 6 PARTE 3/4
+        # EXERCISE 6 part 3/4
         # Q-LEARNING
 
+        # If the pair has never been visited, then it is 0 by default.
         return self.QValues[(state, action)]
         #util.raiseNotDefined()
 
@@ -68,10 +68,11 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 6 PARTE 2/4
+        # EXERCISE 6 part 2/4
         # Q-LEARNING
 
         qvalues = [self.getQValue(state, action) for action in self.getLegalActions(state)]
+
         if not len(qvalues):
           return 0.0
         
@@ -85,14 +86,15 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 6 PARTE 4/4
+        # EXERCISE 6 part 4/4
         # Q-LEARNING
 
+        # We want the qValue for the best action.
         legalActions = self.getLegalActions(state)
         if not len(legalActions):
           return None
         
-        QValue = -1e10  # Podría servir float("-inf")?
+        QValue = float("-inf") 
         for legalAction in legalActions:
           QValueTemporal = self.getQValue(state, legalAction)
 
@@ -117,14 +119,16 @@ class QLearningAgent(ReinforcementAgent):
         # Pick Action
         legalActions = self.getLegalActions(state)
         action = None
-        "*** YOUR CODE HERE ***"
-        #EJERCICIO 7
-        # EPSILON GREEDY
-        # Ya funciona
 
+        "*** YOUR CODE HERE ***"
+        # EXERCISE 7
+        # EPSILON GREEDY
+
+        # First we make sure that there are some legal actions.
         if util.flipCoin(self.epsilon):
+            # We choose the random action.
             action = random.choice(legalActions)
-        else:
+        else: # If not, we take the best.
             action = self.computeActionFromQValues(state)
 
         #util.raiseNotDefined()
@@ -140,7 +144,7 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 6 PARTE 1/4
+        # EXERCISE 6 part 1/4
         # Q-LEARNING
 
         curQValue = self.getQValue(state, action)
@@ -247,3 +251,4 @@ class ApproximateQAgent(PacmanQAgent):
             # you might want to print your weights here for debugging
             "*** YOUR CODE HERE ***"
             pass
+
