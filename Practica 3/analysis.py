@@ -70,7 +70,7 @@ def question3c():
     # If not possible, return 'NOT POSSIBLE'
 
 # EXERCISE 3 part 4/5
-# POLICES
+# PO0L0ICES
 """
     I have set a negative reward response to make it the longest path there is.
 """
