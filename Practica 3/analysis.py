@@ -19,22 +19,21 @@
 # Set the given parameters to obtain the specified policies through
 # value iteration.
 
-# EJERCICIO 2
-# ANÁLISIS DE CRUCE DE PUENTES
+# EXERCISE 2
+# BRIDGE CROSSING ANALYSIS
 """
-    Para que el agente sobreviva, hay que eliminar el ruido pero no por completo
+    For the agent to survive, the noise must be eliminated but not completely.
 """
 def question2():
     answerDiscount = 0.9
-    answerNoise = 0.01 # He cambiado el valor de 0.2 por 0.01
-    # Tengo que mirar de donde sale el 0.01 pq no tengo ni idea
+    answerNoise = 0.01 
     return answerDiscount, answerNoise
 
-# EJERCICIO 3 parte 1/5
-# POLÍTICAS
+# EXERCISE 3 part 1/5
+# POLICIES
 """
-    Sólo hay que cambiar la recompensa viva por una que oblige al agente a terminar rápido.
-    Lo admito esta la he encontrado de pura suerte, pero funciona
+    Just change the live reward to one that forces the agent to finish quickly.
+    I admit this one I found by just pure luck, but it works!
 """
 def question3a():
     answerDiscount = 0.3  
@@ -43,13 +42,13 @@ def question3a():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
-# EJERCICIO 3 parte 2/5
-# POLÍTICAS
+# EXERCISE 3 part 2/5
+# POLICES
 """
-    En primer lugar, tenemos que cambiar la recompensa viva en la que el agente quiera terminar
-    rápido. 
-    Pero sin que se caiga, así que tenemos que cambiar el ruido para decirle que no es
-    una buena idea ir al puente y al hacer eso, tenemos que cambiar la tasa de descuento.
+        First we have to change the live reward where the agent wants to finish quickly. 
+        But without dropping it, so we have to change the noise to tell him that it isn't a good 
+    idea to go to the bridge a good idea to go to the bridge and in doing that we have to 
+    change the discount rate.
 """
 def question3b():
     answerDiscount = 0.1 
@@ -58,10 +57,10 @@ def question3b():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
-# EJERCICIO 3 parte 3/5
-# POLÍTICAS
+# EXERCISE 3 part 3/5
+# POLICES
 """
-    Necesitamos una recompensa no demasiado grande para que vaya en + 1
+    We need a reward that isn't too big to be positive.
 """
 def question3c():
     answerDiscount = 0.9  
@@ -70,10 +69,10 @@ def question3c():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
-# EJERCICIO 3 parte 4/5
-# POLÍTICAS
+# EXERCISE 3 part 4/5
+# PO0L0ICES
 """
-    Se pone una respuesta de recompensa negativa para que haga el camino más largo que exista
+    I have set a negative reward response to make it the longest path there is.
 """
 def question3d():
     answerDiscount = 0.9  
@@ -82,10 +81,10 @@ def question3d():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
-# EJERCICIO 3 parte 5/5
-# POLÍTICAS
+# EXERCISE 3 part 5/5
+# POLICES
 """
-    Así que ponemos una gran recompensa, para que se sepa cuál es mejor sin terminar el juego
+    We put a big reward, so that you know which one is better without finishing the game.
 """
 def question3e():
     answerDiscount = 0.01  
@@ -94,14 +93,14 @@ def question3e():
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
-# EJERCICIO 8
-# CRUCE DE PUENTES REVISITADO
+# EXERCISE 8
+# BRIDGE CROSSING REVISITED
 """
-        Si disminuimos epsilon, el agente irá a los mejores lugares, pero no explorará los nuevos
-    pero eso es un fallo, porque no encontrará el estado terminal dentro de 50 interacciones.
-        Y al aumentar epsilon, el agente descubrirá nuevos lugares, pero será aleatorio y la 
-    política no será óptima después de 50 iteraciones. 
-        Puede que encuentre el camino bueno, pero no tendremos un éxito asegurado
+        If we decrease epsilon, the agent will go to the best places, but won´t
+    explore the new ones  but that is a fail, because it will not find the terminal state within many interactions.
+        And by increasing epsilon, the agent will discover new places, but it will be 
+    random and the policy won't be optimal after many iterations. 
+        It might find the good path, but we won't have a guaranteed success.
 """
 def question8():
     answerEpsilon = 0.3
@@ -116,3 +115,4 @@ if __name__ == '__main__':
     for q in [q for q in dir(analysis) if q.startswith('question')]:
         response = getattr(analysis, q)()
         print('  Question %s:\t%s' % (q, str(response)))
+
