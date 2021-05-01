@@ -63,7 +63,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
         
-        # For the selected range of iterations the following happens.
+        # For the selected range of iterations the following happens
         for i in range(0,self.iterations):
             temporal = util.Counter() # The counter
 
@@ -107,7 +107,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         # EXERCISE 1 part 1/2
         # VALUE ITERATION
 
-        # It's checked if it's the final state.
+        # It's checked if it's the final state
         endStates = self.mdp.getTransitionStatesAndProbs(state, action)
         Qvalue = 0
 
@@ -130,7 +130,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         # EXERCISE 1 part 2/2
         # VALUE ITERATION
 
-        # We check that the game isn't over.
+        # We check that the game isn't over
         if self.mdp.isTerminal(state):
             return None
 
