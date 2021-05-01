@@ -213,8 +213,8 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 10 PARTE 1/2
-        # Q-LEARNING APROXIMADO
+        # EXERCISE 10 part 1/2
+        # APPROXIMATE Q-LEARNING 
 
         q = 0
         allFeatures = self.featExtractor.getFeatures(state, action)
@@ -230,8 +230,8 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-         # EJERCICIO 10 PARTE 2/2
-        # Q-LEARNING APROXIMADO
+        # EXERCISE 10 part 2/2
+        # APPROXIMATE Q-LEARNING 
 
         allFeatures = self.featExtractor.getFeatures(state, action)
         diff = (reward + (self.discount * self.getValue(nextState))) - self.getQValue(state, action)
