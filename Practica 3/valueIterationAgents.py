@@ -11,6 +11,19 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+# valueIterationAgents.py
+# -----------------------
+# Licensing Information:  You are free to use or extend these projects for
+# educational purposes provided that (1) you do not distribute or publish
+# solutions, (2) you retain this notice, and (3) you provide clear
+# attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
+# 
+# Attribution Information: The Pacman AI projects were developed at UC Berkeley.
+# The core projects and autograders were primarily created by John DeNero
+# (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
+# Student side autograding was added by Brad Miller, Nick Hay, and
+# Pieter Abbeel (pabbeel@cs.berkeley.edu).
+
 
 import mdp, util
 
@@ -218,4 +231,49 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
         # Sin hacer
 
         pq = util.PriorityQueue()
+        predecessors = {}
+
+        # Calcula los predecesores en cada estado
+        for state in self.mdp.getStates():
+          if not self.mdp.isTerminal(state):
+            for action in self.mdp.getPossibleActions(state):
+              for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
+                if nextState in predecessors:
+                  predecessors[nextState].add(state)
+                else:
+                  predecessors[nextState] = {state}
+
+        # Obtiene la diferencia de cada estado y su valor maximo
+        for state in self.mdp.getStates():
+          if not self.mdp.isTerminal(state):
+            values = []
+            for action in self.mdp.getPossibleActions(state):
+              q_value = self.computeQValueFromValues(state, action)
+              values.append(q_value)
+            diff = abs(max(values) - self.values[state])
+            # Se añade a la cola con prioridad al valor más pequeño (min-heap)
+            pq.update(state, - diff)
+
+        # iteración sobre los predecesores y exploración de los estados con mayor diff
+        for i in range(self.iterations):
+          if pq.isEmpty():
+            break
+          temp_state = pq.pop()
+          if not self.mdp.isTerminal(temp_state):
+            values = []
+            for action in self.mdp.getPossibleActions(temp_state):
+              q_value = self.computeQValueFromValues(temp_state, action)
+              values.append(q_value)
+            self.values[temp_state] = max(values)
+
+          for p in predecessors[temp_state]:
+            if not self.mdp.isTerminal(p):
+              values = []
+              for action in self.mdp.getPossibleActions(p):
+                q_value = self.computeQValueFromValues(p, action)
+                values.append(q_value)
+              diff = abs(max(values) - self.values[p])
+              # Se añade a la cola co prioridad si la diferencia es mayor que el ruido tolerado
+              if diff > self.theta:
+                pq.update(p, -diff)
 
