@@ -315,6 +315,8 @@ class ExactInference(InferenceModule):
         # EJERCICIO 2
         # OBSERVACIÓN EXACTA DE LA INFERENCIA
         # Funciona
+        # Buscar que ecuacion estaría haciendo, aunque luego 
+        # la ponga en la memoria
 
         pacmanPosition = gameState.getPacmanPosition()
         jailPosition = self.getJailPosition()
@@ -340,7 +342,27 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 3
+        # INFERENCIA EXACTA CON EL TIEMPO TRANSCURRIDO
+        # Funciona
+        # este creo que es la ecuación que pondría en la memoria ->
+        """
+            P( G at t + 1 ) =
+              = sum of over ( G at t) [P (G at t) * P(G at t + 1 | G at T)] 
+        """
+
+        elapseTimeBeliefs = DiscreteDistribution()
+
+        for oldPosition in self.allPositions:   
+            newPositionDistance = self.getPositionDistribution(gameState, oldPosition)   # Obtiene la distribución de la posicion actual
+            #oldProbability = self.beliefs[oldPosition]  # Obtiene los estados de creencias/opinion anteriores
+
+            for newPosition in newPositionDistance.keys():
+                elapseTimeBeliefs[newPosition] = elapseTimeBeliefs[newPosition] + (newPositionDistance[newPosition] * self.beliefs[oldPosition]) # Se multiplican todas las probabilidades anteriores por la nueva
+
+        self.beliefs = elapseTimeBeliefs
+        self.beliefs.normalize() # esta linea creo que es opcional
+        # raiseNotDefined()
 
     def getBeliefDistribution(self):
         return self.beliefs
