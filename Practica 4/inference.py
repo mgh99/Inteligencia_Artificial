@@ -188,7 +188,23 @@ class InferenceModule:
         Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 1 
+        # PROBABILIDAD DE OBSERVACIÓN
+        # Funciona
+
+        if ghostPosition == jailPosition and pacmanPosition != jailPosition:
+
+            if noisyDistance == None:
+                return 1
+            else:
+                return 0
+        
+        if noisyDistance == None:
+            return 0
+        
+        return busters.getObservationProbability(noisyDistance, manhattanDistance(pacmanPosition, ghostPosition)) 
+
+        # raiseNotDefined()
 
     def setGhostPosition(self, gameState, ghostPosition, index):
         """
@@ -493,3 +509,4 @@ class MarginalInference(InferenceModule):
         for t, prob in jointDistribution.items():
             dist[t[self.index - 1]] += prob
         return dist
+
