@@ -389,7 +389,15 @@ class ParticleFilter(InferenceModule):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 5 parte 1/2
+        # INICIALIZACIÓN Y CREENCIAS DE INFERENCIA APROXIMADA
+        # Funciona
+
+        for temporal in range(self.numParticles):
+            index = temporal % len(self.legalPositions)
+            self.particles.append(self.legalPositions[index])
+
+        #raiseNotDefined()
 
     def observeUpdate(self, observation, gameState):
         """
@@ -423,7 +431,17 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 5 parte 2/2
+        # INICIALIZACION Y CREENCIAS DE LA INFERENCIA APROXIMADA
+        # Funciona
+
+        belief = DiscreteDistribution()
+        for temporal in self.particles:
+            belief[temporal] = belief[temporal] + 1 # Desde que la creencia/opcion tiene que ser aumentada 
+        
+        belief.normalize()
+        return belief
+        #raiseNotDefined()
 
 
 class JointParticleFilter(ParticleFilter):
@@ -545,4 +563,3 @@ class MarginalInference(InferenceModule):
         for t, prob in jointDistribution.items():
             dist[t[self.index - 1]] += prob
         return dist
-
