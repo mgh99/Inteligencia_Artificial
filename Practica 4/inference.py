@@ -412,7 +412,22 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 6
+        # OBSERVACIÓN APROXIMADA DE LA INFERENCIA
+
+        updateBeliefs = DiscreteDistribution()
+        pacman, jail = gameState.getPacmanPosition(), self.getJailPosition()
+
+        for temporal in self.particles:
+            updateBeliefs[temporal] = updateBeliefs[temporal] + self.getObservationProb(observation, pacman, temporal, jail)
+        
+        self.beliefs = updateBeliefs
+        if all([probability == 0 for probability in updateBeliefs.values()]): # Buscar que es all?
+            self.initializeUniformly(gameState)
+        else:
+            self.particles = [self.beliefs.sample() for i in self.particles]
+
+        #raiseNotDefined()
 
     def elapseTime(self, gameState):
         """
