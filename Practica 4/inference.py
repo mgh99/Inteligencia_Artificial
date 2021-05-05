@@ -494,6 +494,31 @@ class JointParticleFilter(ParticleFilter):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 8
+        # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTÍCULAS
+        # No funciona, pero esto ya es de lo voluntario -> si lo pruebo en individual
+        # Pero si paso el augrader en conjunto si que funciona
+    """
+        numParticles = self.numParticles
+        numGhosts = self.numGhosts
+
+        # Operación para obtener el producto cartesiano  
+        position = list(itertools.product(self.legalPositions, repeat = numGhosts)) # que es intertools, product y repeat = ?
+
+        # Ransomizamos el orden de la lista
+        random.shuffle(position) # que es shuffle
+
+        temporal = 0
+        while temporal < numParticles:
+            for posit in position:
+                if temporal < numParticles:
+                    # Añade la posicion posit a las partculas
+                    self.particles.append(posit)
+                    # Se mueve para la siguiente particula
+                    temporal = temporal + 1
+                else:
+                    break # No hay mas paerticulas
+    """
         raiseNotDefined()
 
     def addGhostAgent(self, agent):
@@ -527,6 +552,29 @@ class JointParticleFilter(ParticleFilter):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 9
+        # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTICULAS
+        # Tampoco funciona, pero es el voluntario
+        # mirar la grabación y ver si explica algo sino mandarle un correo
+
+    """
+        observeUpdate = DiscreteDistribution()
+        
+        for position in self.particles:
+            weight = 1
+
+            for i in range(self.numGhosts):
+                weight = weight * (self.getObservationProb(observation[i], gameState.getPacmanPosition(), position[i], self.getJailPosition(i)))
+
+            observeUpdate[position] = observeUpdate[position] + weight
+
+        if observeUpdate.total() == 0:
+            self.initialUniformly(gameState)
+        else:
+            self.beliefs = observeUpdate
+            self.beliefs.normalize()
+            self.particles = [self.beliefs.sample() for i in range(self.numParticles)]
+    """
         raiseNotDefined()
 
     def elapseTime(self, gameState):
@@ -540,8 +588,15 @@ class JointParticleFilter(ParticleFilter):
 
             # now loop through and update each entry in newParticle...
             "*** YOUR CODE HERE ***"
+            # EJERCICIO 10
+            # FILTRO DE ARTÍCULAS CONJUNTO DE TIEMPO TRANSCURRIDO Y PRUEBA COMPLETA
+            # No funciona, pero es la parte voluntaria
+        """   
+            for i in range(self.numGhosts):
+                newPositionDistance = self.getPositionDistribution(gameState, newParticle, i, self.ghostAgents[i])
+                newParticle[i] = newPositionDistance.sample()
+        """
             raiseNotDefined()
-
             """*** END YOUR CODE HERE ***"""
             newParticles.append(tuple(newParticle))
         self.particles = newParticles
@@ -588,4 +643,5 @@ class MarginalInference(InferenceModule):
         for t, prob in jointDistribution.items():
             dist[t[self.index - 1]] += prob
         return dist
+
 
