@@ -435,7 +435,17 @@ class ParticleFilter(InferenceModule):
         gameState.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 7
+        # INFERENCIA APROXIMADA CON EL TEIMPO TRANSCURRIDO
+
+        newParticles = [] # Esta es mi lista
+        
+        for temporal in self.particles:
+            newDistance = self.getPositionDistribution(gameState, temporal)
+            newParticles.append(newDistance.sample())
+        
+        self.particles = newParticles
+        # raiseNotDefined()
 
     def getBeliefDistribution(self):
         """
@@ -578,3 +588,4 @@ class MarginalInference(InferenceModule):
         for t, prob in jointDistribution.items():
             dist[t[self.index - 1]] += prob
         return dist
+
