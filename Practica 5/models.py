@@ -80,6 +80,14 @@ class RegressionModel(object):
     def __init__(self):
         # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 2 parte 1/4
+        # REGRESION NO LINEAL
+
+        self.batch_size = 1
+        self.w1 = nn.Parameter(1, 20)
+        self.w2 = nn.Parameter(20, 1)
+        self.b1 = nn.Parameter(1, 20)
+        self.b2 = nn.Parameter(20, 1)
 
     def run(self, x):
         """
@@ -91,6 +99,15 @@ class RegressionModel(object):
             A node with shape (batch_size x 1) containing predicted y-values
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 2 parte 2/4
+        # REGRESION NO LINEAL
+
+        firstLayer = nn.Linear(x, self.w1)
+        firstLayerB = nn.AddBias(firstLayer, self.b1)
+        firstLayerBNozero = nn.ReLU(firstLayerB)
+        
+        secondLayer = nn.Linear(firstLayerBNozero, self.w2)
+        return nn.AddBias(secondLayer, self.b2)
 
     def get_loss(self, x, y):
         """
@@ -103,12 +120,41 @@ class RegressionModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 2 parte 3/4
+        # REGRESION NO LINEAL
+
+        return nn.SquareLoss(self.run(x), y)
 
     def train(self, dataset):
         """
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 2 parte 4/4
+        # REGRESION NO LINEAL
+
+        numbeWrong = 1 # Poner a 1 sólo para entrar en el bucle
+        while numbeWrong > 0:
+            numbeWrong = 0 #  Restablecer el número incorrecto después de cada lote
+
+            # y es la predicción correcta. Por lo tanto, la actualización si el perceptrón se equivoca
+            for x, y in dataset.iterate_once(self.batch_size):
+
+                # crear un objeto de pérdida
+                loss = self.get_loss(x, y)
+
+                # hacer un gradiente basado en la pérdida con respecto a los parámetros
+                gradWrtW1, gradWrtW2, gradWrtB1, gradWrtB2 = nn.gradients (loss, [self.w1, self.w2, self.b1, self.b2])
+
+                if nn.as_scalar(self.get_loss (nn.Constant(dataset.x), nn.Constant(dataset.y))) >= 0.02:
+                    self.w1.update(gradWrtW1, -0.009)
+                    self.b1.update(gradWrtB1, -0.009)
+                    self.w2.update(gradWrtW2, -0.009)
+                    self.b2.update(gradWrtB2, -0.009)
+
+                    numbeWrong = numbeWrong + 1
+
+
 
 class DigitClassificationModel(object):
     """
@@ -127,6 +173,16 @@ class DigitClassificationModel(object):
     def __init__(self):
         # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 3 parte 1/4
+        # CLASIFICACIÓN DE DÍGITOS
+
+        # Aunque no lo pone en la practica hay que añadir esto de nuevo para que funcione
+        self.batch_size = 3
+
+        self.w1 = nn.Parameter(784, 200)
+        self.w2 = nn.Parameter(200, 10)
+        self.b1 = nn.Parameter(1, 200)
+        self.b2 = nn.Parameter(1, 10)
 
     def run(self, x):
         """
@@ -143,6 +199,15 @@ class DigitClassificationModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 3 parte 2/4
+        # CLASIFICACION DE DIGITOS
+
+        firstLayer = nn.Linear(x, self.w1)
+        firstLayerB = nn.AddBias(firstLayer, self.b1)
+        firstLayerBNozero = nn.ReLU(firstLayerB)
+        secondLayer = nn.Linear(firstLayerBNozero, self.w2)
+
+        return nn.AddBias (secondLayer, self.b2)
 
     def get_loss(self, x, y):
         """
@@ -158,12 +223,41 @@ class DigitClassificationModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 3 parte 3/4
+        # CLASIFICACION DE DIGITOS
+        # Esta parte no la pide expresamente en la práctica pero creo que tengo que añadirla
+
+        return nn.SoftmaxLoss(self.run(x), y)
 
     def train(self, dataset):
         """
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 3 parte 4/4
+        # CLASIFICACIÓN DE DIGITOS
+        # En la simulación no sé si será normal pero ha tardado muchísimo en acabar
+        # el 5 era el número que al principio ha tardado más
+
+        numberWrong = 1
+        while numberWrong > 0:
+            numberWrong = 0
+
+            for x, y in dataset.iterate_once(self.batch_size):
+                loss = self.get_loss(x,y)
+                gradWrtW1, gradWrtW2, gradWrtB1, gradWrtB2 = nn.gradients(loss, [self.w1, self.w2, self.b1, self.b2])
+
+                print(dataset.get_validation_accuracy())
+                if dataset.get_validation_accuracy() <0.97:
+
+                   #  0,05 es un ajuste excesivo, al igual que 0,01, por lo que es necesario reducirlo
+                   self.w1.update(gradWrtW1, -0.007)
+                   self.w2.update(gradWrtW2, -0.007)
+                   self.b1.update(gradWrtB1, -0.007)
+                   self.b2.update(gradWrtB2, -0.007)
+
+                   numberWrong = numberWrong + 1
+
 
 class LanguageIDModel(object):
     """
