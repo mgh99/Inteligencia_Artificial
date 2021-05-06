@@ -177,12 +177,13 @@ class DigitClassificationModel(object):
         # CLASIFICACIÓN DE DÍGITOS
 
         # Aunque no lo pone en la practica hay que añadir esto de nuevo para que funcione
-        self.batch_size = 0.25
+        self.batch_size = 10
 
-        self.w1 = nn.Parameter(784, 200)
-        self.w2 = nn.Parameter(200, 10)
-        self.b1 = nn.Parameter(1, 200)
-        self.b2 = nn.Parameter(1, 10)
+        self.w1 = nn.Parameter(784, 300)
+        self.w2 = nn.Parameter(300, 10)
+        self.b1 = nn.Parameter(1, 300)
+        self.lr = .13
+        #self.b2 = nn.Parameter(1, 10)
 
     def run(self, x):
         """
@@ -202,12 +203,10 @@ class DigitClassificationModel(object):
         # EJERCICIO 3 parte 2/3
         # CLASIFICACION DE DIGITOS
 
-        first_layer = nn.Linear(x, self.w1)
-        first_layer_b = nn.AddBias(first_layer, self.b1)
-        first_layer_b_nozero = nn.ReLU(first_layer_b)
-        second_layer = nn.Linear(first_layer_b_nozero, self.w2)
-        
-        return nn.AddBias(second_layer, self.b2)
+        relu = nn.ReLU(nn.AddBias(nn.Linear(x, self.w1), self.b1))
+        predicted_y = nn.Linear(relu, self.w2)
+
+        return predicted_y
 
     def get_loss(self, x, y):
         """
@@ -234,9 +233,22 @@ class DigitClassificationModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
-        
-    
+        # Es parte del ejercicio 3 pero no siempre hae falta creo
 
+        while True:
+            for x, y in dataset.iterate_once(self.batch_size):
+                loss = self.get_loss(x, y)
+                gradient = nn.gradients(loss, [self.w1, self.b1, self.w2])
+
+                self.w1.update(gradient[0], -self.lr)
+                self.b1.update(gradient[1], -self.lr)
+                self.w2.update(gradient[2], -self.lr)
+            
+            if dataset.get_validation_accuracy() >= 0.98:
+                break
+
+            self.lr = self.lr * 0.8
+        
 class LanguageIDModel(object):
     """
     A model for language identification at a single-word granularity.
@@ -319,4 +331,5 @@ class LanguageIDModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+
 
