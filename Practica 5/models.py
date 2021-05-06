@@ -83,11 +83,11 @@ class RegressionModel(object):
         # EJERCICIO 2 parte 1/4
         # REGRESION NO LINEAL
 
-        self.batch_size = 1
-        self.w1 = nn.Parameter(1, 20)
-        self.w2 = nn.Parameter(20, 1)
-        self.b1 = nn.Parameter(1, 20)
-        self.b2 = nn.Parameter(20, 1)
+        self.batch_size = 5
+        self.w1 = nn.Parameter(1, 100)
+        self.w2 = nn.Parameter(100, 1)
+        self.b1 = nn.Parameter(1, 100)
+        self.lr = 0.004
 
     def run(self, x):
         """
@@ -102,12 +102,10 @@ class RegressionModel(object):
         # EJERCICIO 2 parte 2/4
         # REGRESION NO LINEAL
 
-        firstLayer = nn.Linear(x, self.w1)
-        firstLayerB = nn.AddBias(firstLayer, self.b1)
-        firstLayerBNozero = nn.ReLU(firstLayerB)
-        
-        secondLayer = nn.Linear(firstLayerBNozero, self.w2)
-        return nn.AddBias(secondLayer, self.b2)
+        relu = nn.ReLU(nn.AddBias(nn.Linear(x, self.w1), self.b1))
+        predicted_y = nn.Linear(relu, self.w2)
+
+        return predicted_y
 
     def get_loss(self, x, y):
         """
@@ -133,27 +131,23 @@ class RegressionModel(object):
         # EJERCICIO 2 parte 4/4
         # REGRESION NO LINEAL
 
-        numbeWrong = 1 # Poner a 1 sólo para entrar en el bucle
-        while numbeWrong > 0:
-            numbeWrong = 0 #  Restablecer el número incorrecto después de cada lote
-
-            # y es la predicción correcta. Por lo tanto, la actualización si el perceptrón se equivoca
+        while True:
+            
+            # Si es la predicción correcta. Por lo tanto, la actualización si el perceptrón se equivoca
             for x, y in dataset.iterate_once(self.batch_size):
 
                 # crear un objeto de pérdida
                 loss = self.get_loss(x, y)
 
-                # hacer un gradiente basado en la pérdida con respecto a los parámetros
-                gradWrtW1, gradWrtW2, gradWrtB1, gradWrtB2 = nn.gradients (loss, [self.w1, self.w2, self.b1, self.b2])
+                #  hacer un gradiente basado en la pérdida con respecto a los parámetros
+                gradient = nn.gradients(loss, [self.w1, self.b1, self.w2])
 
-                if nn.as_scalar(self.get_loss (nn.Constant(dataset.x), nn.Constant(dataset.y))) >= 0.02:
-                    self.w1.update(gradWrtW1, -0.009)
-                    self.b1.update(gradWrtB1, -0.009)
-                    self.w2.update(gradWrtW2, -0.009)
-                    self.b2.update(gradWrtB2, -0.009)
-
-                    numbeWrong = numbeWrong + 1
-
+                self.w1.update(gradient[0], -self.lr)
+                self.b1.update(gradient[1], -self.lr)
+                self.w2.update(gradient[2], -self.lr)
+            
+            if nn.as_scalar(self.get_loss(nn.Constant(dataset.x), nn.Constant(dataset.y))) < 0.02:
+                break
 
 
 class DigitClassificationModel(object):
@@ -331,5 +325,6 @@ class LanguageIDModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+
 
 
