@@ -277,6 +277,16 @@ class LanguageIDModel(object):
 
         # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 4 parte 1/4
+        # IDENTIFICACION LINGUISTICA
+
+        self.hidden_size = 300
+        self.learning_rate =  0.3
+
+        self.w_one = nn.Variable(self.num_chars, self.hidden_size)
+        self.w_two = nn.Variable(self.hidden_size, 5)
+        self.w_three = nn.Variable(self.hidden_size, 5)
+        self.w_four = nn.Variable(5, self.hidden_size)
 
     def run(self, xs):
         """
@@ -308,6 +318,7 @@ class LanguageIDModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
+        
 
     def get_loss(self, xs, y):
         """
@@ -330,3 +341,4 @@ class LanguageIDModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+
