@@ -264,13 +264,15 @@ class LanguageIDModel(object):
         # EJERCICIO 4 parte 1/4
         # IDENTIFICACION LINGUISTICA
 
-        self.hidden_size = 300
-        self.learning_rate =  0.3
+        self.lr = .12
+        self.b1 = nn.Parameter(1, 200)
+        self.w1 = nn.Parameter(self.num_chars, 200)
 
-        self.w_one = nn.Variable(self.num_chars, self.hidden_size)
-        self.w_two = nn.Variable(self.hidden_size, 5)
-        self.w_three = nn.Variable(self.hidden_size, 5)
-        self.w_four = nn.Variable(5, self.hidden_size)
+        self.w_h1 = nn.Parameter(200, 200)
+        self.b_h1 = nn.Parameter(1, 200)
+
+        self.batch = 30
+        self.out = nn.Parameter(200, len(self.languages))
 
     def run(self, xs):
         """
@@ -302,7 +304,18 @@ class LanguageIDModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 4 parte 2/4
+        # IDENTIFICACION LINGUISTICA
 
+        h = nn.AddBias(nn.Linear(xs[0], self.w1), self.b1)
+
+        for x in xs[1:]:
+            # x: shape batch_size x self.num_chars
+            temp = nn.Add(nn.Linear(x, self.w1), nn.Linear(h, self.w_h1))
+            #temp2 = nn.AddBias(nn.Add(temp, nn.Linear(h, self.w_h2)), self.b_h1)
+            h = nn.ReLU(nn.AddBias(temp, self.b_h1))
+
+        return nn.Linear(h, self.out)
 
     def get_loss(self, xs, y):
         """
@@ -319,12 +332,36 @@ class LanguageIDModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 4 parte 3/4
+        # IDENTIFICACION LINGUISTICA
+
+        return nn.SoftmaxLoss(self.run(xs), y)
 
     def train(self, dataset):
         """
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+        # EJERCICIO 4 parte 4/4
+        # IDENTIFICACION LINGUISTICA
+
+        while True:
+            for x,y in dataset.iterate_once(self.batch):
+                loss = self.get_loss(x, y)
+                gradient = nn.gradients(loss, [self.w1, self.b1, self.w_h1, self.b_h1, self.out])
+                self.w1.update(gradient[0], -self.lr)
+                self.b1.update(gradient[1], -self.lr)
+                self.w_h1.update(gradient[2], -self.lr)
+                #self.w_h2.update(gradient[3], -self.lr)
+                self.b_h1.update(gradient[3], -self.lr)
+                #self.b_h2.update(gradient[5], -self.lr)
+                self.out.update(gradient[4], -self.lr)
+
+            if dataset.get_validation_accuracy() >= .9:
+                break
+
+            self.lr *= .97
+
 
 
 
