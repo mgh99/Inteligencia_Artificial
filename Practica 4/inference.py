@@ -76,6 +76,10 @@ class DiscreteDistribution(dict):
         """
         "*** YOUR CODE HERE ***"
         # EJERCICIO 0 parte 1/2
+        """
+            normaliza los valores de la distribución para sumar uno, 
+            pero mantiene las proporciones de los valores iguales
+        """
         
         total = self.total()
         if total == 0:
@@ -109,6 +113,11 @@ class DiscreteDistribution(dict):
         """
         "*** YOUR CODE HERE ***"
         # EJERCICIO 0 parte 2/2
+        """
+            extrae una muestra de la distribución, donde la
+            probabilidad de que se muestree una clave es proporcional 
+            a su valor correspondiente
+        """
 
         sample = random.random() * self.total()
 
@@ -190,8 +199,11 @@ class InferenceModule:
         "*** YOUR CODE HERE ***"
         # EJERCICIO 1 
         # PROBABILIDAD DE OBSERVACIÓN
-        # Funciona
+        # Funcionaba
 
+        # Si la posiscion del fantasma es la misma que de la prisión y la del Pacman es diferente a la prisión,
+        # entonces, si no hay distancia es que se han encontrado y es 1 (True) y en caso contrario, es que no se han
+        # encontrado y es 0 (False)
         if ghostPosition == jailPosition and pacmanPosition != jailPosition:
 
             if noisyDistance == None:
@@ -314,15 +326,17 @@ class ExactInference(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 2
         # OBSERVACIÓN EXACTA DE LA INFERENCIA
-        # Funciona
-        # Buscar que ecuacion estaría haciendo, aunque luego 
-        # la ponga en la memoria
+        # Funcionaba
+        # Falta una ecuación, esa ponla en la memoria
 
         pacmanPosition = gameState.getPacmanPosition()
         jailPosition = self.getJailPosition()
         noisyDistance = observation
         newBeliefs = DiscreteDistribution()
 
+        # Para una posicion en todas las posibles posiciones del mundo, se hace la operación de la probabilidad de
+        # que este en una posición en concreto teniendo en cuenta, la posición de pacman, la posición de la cárcel, 
+        # la posición en general y la distancia
         for position in self.allPositions:
 
             probability = self.getObservationProb(noisyDistance, pacmanPosition, position, jailPosition)
@@ -344,7 +358,7 @@ class ExactInference(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 3
         # INFERENCIA EXACTA CON EL TIEMPO TRANSCURRIDO
-        # Funciona
+        # Funcionaba
         # este creo que es la ecuación que pondría en la memoria ->
         """
             P( G at t + 1 ) =
@@ -353,6 +367,9 @@ class ExactInference(InferenceModule):
 
         elapseTimeBeliefs = DiscreteDistribution()
 
+        # Para las antiguas posiciones en todas las posibles posiciones que puede tener, se declara una nueva 
+        # posición con distancia y para la nueva posicion en cualquier posición con distancia se declara el 
+        # tiempo que ha pasado para obtener todas las probabilidades anteriores por una nueva
         for oldPosition in self.allPositions:   
             newPositionDistance = self.getPositionDistribution(gameState, oldPosition)   # Obtiene la distribución de la posicion actual
             #oldProbability = self.beliefs[oldPosition]  # Obtiene los estados de creencias/opinion anteriores
@@ -361,7 +378,7 @@ class ExactInference(InferenceModule):
                 elapseTimeBeliefs[newPosition] = elapseTimeBeliefs[newPosition] + (newPositionDistance[newPosition] * self.beliefs[oldPosition]) # Se multiplican todas las probabilidades anteriores por la nueva
 
         self.beliefs = elapseTimeBeliefs
-        self.beliefs.normalize() # esta linea creo que es opcional
+        self.beliefs.normalize() # esta linea es opcional
         # raiseNotDefined()
 
     def getBeliefDistribution(self):
@@ -391,8 +408,11 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 5 parte 1/2
         # INICIALIZACIÓN Y CREENCIAS DE INFERENCIA APROXIMADA
-        # Funciona
+        # Funcionaba
 
+        # Para una variable temporal en un rango en concreto se declara index 
+        # (como el modulo de lo que ocupa las acciones legales para las posiciones) y
+        # se añade a la lista
         for temporal in range(self.numParticles):
             index = temporal % len(self.legalPositions)
             self.particles.append(self.legalPositions[index])
@@ -414,18 +434,20 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 6
         # OBSERVACIÓN APROXIMADA DE LA INFERENCIA
+        # Funcionaba
 
         updateBeliefs = DiscreteDistribution()
         pacman, jail = gameState.getPacmanPosition(), self.getJailPosition()
 
+        # Para cada temporal de crea la variable de actualizar que suma la observació de pacaman con la posicion temporal actualizada
         for temporal in self.particles:
             updateBeliefs[temporal] = updateBeliefs[temporal] + self.getObservationProb(observation, pacman, temporal, jail)
         
         self.beliefs = updateBeliefs
-        if all([probability == 0 for probability in updateBeliefs.values()]): # Buscar que es all?
-            self.initializeUniformly(gameState)
+        if all([probability == 0 for probability in updateBeliefs.values()]): # all -> hace un booleano de true o false
+            self.initializeUniformly(gameState) # -> True
         else:
-            self.particles = [self.beliefs.sample() for i in self.particles]
+            self.particles = [self.beliefs.sample() for i in self.particles] # -> False
 
         #raiseNotDefined()
 
@@ -437,6 +459,7 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 7
         # INFERENCIA APROXIMADA CON EL TEIMPO TRANSCURRIDO
+        # Funcionaba
 
         newParticles = [] # Esta es mi lista
         
@@ -458,7 +481,7 @@ class ParticleFilter(InferenceModule):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 5 parte 2/2
         # INICIALIZACION Y CREENCIAS DE LA INFERENCIA APROXIMADA
-        # Funciona
+        # Funcionaba
 
         belief = DiscreteDistribution()
         for temporal in self.particles:
@@ -497,29 +520,27 @@ class JointParticleFilter(ParticleFilter):
         # EJERCICIO 8
         # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTÍCULAS
         # No funciona, pero esto ya es de lo voluntario -> si lo pruebo en individual
-        # Pero si paso el augrader en conjunto si que funciona
-    """
+        # Pero si paso el autograder en conjunto si que funciona
+        # Si ejecuto todas las partes voluntarias se estropea todo el código y no entiendo por qué
+    
         numParticles = self.numParticles
         numGhosts = self.numGhosts
-
-        # Operación para obtener el producto cartesiano  
-        position = list(itertools.product(self.legalPositions, repeat = numGhosts)) # que es intertools, product y repeat = ?
-
+        # Operación para obtener el producto cartesiano (itertools.product())  
+        position = list(itertools.product(self.legalPositions, repeat = numGhosts)) # Se repite (repeat) el nº de fantasmas que existan
         # Ransomizamos el orden de la lista
-        random.shuffle(position) # que es shuffle
-
+        random.shuffle(position) # shuffle -> reorganiza en orden los elementos de mi lista, en este caso las posiciones
         temporal = 0
         while temporal < numParticles:
             for posit in position:
                 if temporal < numParticles:
-                    # Añade la posicion posit a las partculas
+                    # Añade la posicion posit a las particulas
                     self.particles.append(posit)
                     # Se mueve para la siguiente particula
                     temporal = temporal + 1
                 else:
-                    break # No hay mas paerticulas
-    """
-        raiseNotDefined()
+                    break # No hay mas particulas
+    
+        #raiseNotDefined()
 
     def addGhostAgent(self, agent):
         """
@@ -552,29 +573,6 @@ class JointParticleFilter(ParticleFilter):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 9
-        # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTICULAS
-        # Tampoco funciona, pero es el voluntario
-        # mirar la grabación y ver si explica algo sino mandarle un correo
-
-    """
-        observeUpdate = DiscreteDistribution()
-        
-        for position in self.particles:
-            weight = 1
-
-            for i in range(self.numGhosts):
-                weight = weight * (self.getObservationProb(observation[i], gameState.getPacmanPosition(), position[i], self.getJailPosition(i)))
-
-            observeUpdate[position] = observeUpdate[position] + weight
-
-        if observeUpdate.total() == 0:
-            self.initialUniformly(gameState)
-        else:
-            self.beliefs = observeUpdate
-            self.beliefs.normalize()
-            self.particles = [self.beliefs.sample() for i in range(self.numParticles)]
-    """
         raiseNotDefined()
 
     def elapseTime(self, gameState):
@@ -588,15 +586,8 @@ class JointParticleFilter(ParticleFilter):
 
             # now loop through and update each entry in newParticle...
             "*** YOUR CODE HERE ***"
-            # EJERCICIO 10
-            # FILTRO DE ARTÍCULAS CONJUNTO DE TIEMPO TRANSCURRIDO Y PRUEBA COMPLETA
-            # No funciona, pero es la parte voluntaria
-        """   
-            for i in range(self.numGhosts):
-                newPositionDistance = self.getPositionDistribution(gameState, newParticle, i, self.ghostAgents[i])
-                newParticle[i] = newPositionDistance.sample()
-        """
             raiseNotDefined()
+
             """*** END YOUR CODE HERE ***"""
             newParticles.append(tuple(newParticle))
         self.particles = newParticles
@@ -643,5 +634,4 @@ class MarginalInference(InferenceModule):
         for t, prob in jointDistribution.items():
             dist[t[self.index - 1]] += prob
         return dist
-
 
