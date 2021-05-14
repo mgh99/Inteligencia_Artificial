@@ -146,6 +146,7 @@ class GreedyBustersAgent(BustersAgent):
         "*** YOUR CODE HERE ***"
         # EJERCICIO 4
         # PRUEBA COMPLETA DE INFERENCIA EXACTA
+        # Funcionaba
         
         minDistance = float("inf")
         closetGhostPosition = None
@@ -164,7 +165,7 @@ class GreedyBustersAgent(BustersAgent):
         pathGhost = float ("inf")
         bestAction = None
 
-        # Para cada acción legal se analiza hasta encontrat la mejor o la menos mala
+        # Para cada acción legal se analiza hasta encontrar la mejor o la menos mala
         for action in legal:
             succesorPosition = Actions.getSuccessor(pacmanPosition, action)
             temporal = self.distancer.getDistance(succesorPosition, closetGhostPosition)
