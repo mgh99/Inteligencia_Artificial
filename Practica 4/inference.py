@@ -517,6 +517,7 @@ class JointParticleFilter(ParticleFilter):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
+    
         # EJERCICIO 8
         # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTÍCULAS
         # No funciona, pero esto ya es de lo voluntario -> si lo pruebo en individual
@@ -541,6 +542,7 @@ class JointParticleFilter(ParticleFilter):
                     break # No hay mas particulas
     
         #raiseNotDefined()
+    
 
     def addGhostAgent(self, agent):
         """
@@ -573,7 +575,31 @@ class JointParticleFilter(ParticleFilter):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        # EJERCICIO 9
+        # OBSERVACIÓN CONJUNTA DEL FILTRO DE PARTICULAS
+        # En los apuntes pone i, yo lo he cambiado por position
+        # Funciona
+
+        observeUpdate = DiscreteDistribution()
+        for position in self.particles:
+            weight = 1.0
+
+            # Sabiendo la posición de Pacman, encuentra la probabilidad potencial de un fantasma y la de la cárcel
+            for i in range(self.numGhosts):
+                weight = weight * (self.getObservationProb(observation[i], gameState.getPacmanPosition(), position[i], self.getJailPosition(i)))
+
+            # Se añade el peso a la posición deseada
+            observeUpdate[position] = observeUpdate[position] + weight
+        
+        # Caso especial en el que todas las particulas reciben de peso 0
+        if not observeUpdate.total():
+            self.initializeUniformly(gameState)
+        else:
+            self.beliefs = observeUpdate
+            self.beliefs.normalize()
+            self.particles = [self.beliefs.sample() for i in range(self.numParticles)]
+
+        # raiseNotDefined()
 
     def elapseTime(self, gameState):
         """
@@ -586,8 +612,14 @@ class JointParticleFilter(ParticleFilter):
 
             # now loop through and update each entry in newParticle...
             "*** YOUR CODE HERE ***"
-            raiseNotDefined()
+            # EJERCICIO 10
+            # FILTRO DE PARTICULAS CONJUNTO DE TIEMPO TRANSCURRIDO Y PRUEBA COMPLETA
 
+            for i in range(self.numGhosts):
+                newPosDist = self.getPositionDistribution(gameState, newParticle, i, self.ghostAgents[i])
+                newParticle[i] = newPosDist.sample()
+
+            #raiseNotDefined()
             """*** END YOUR CODE HERE ***"""
             newParticles.append(tuple(newParticle))
         self.particles = newParticles
