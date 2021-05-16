@@ -361,7 +361,7 @@ class LanguageIDModel(object):
 
                 # We make a gradient based on the loss with respect to the parameters
                 gradient = nn.gradients(loss, [self.w1, self.b1, self.w_h1, self.b_h1, self.out])
-                
+
                 self.w1.update(gradient[0], -self.lr)
                 self.b1.update(gradient[1], -self.lr)
                 self.w_h1.update(gradient[2], -self.lr)
