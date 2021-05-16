@@ -27,7 +27,7 @@ class PerceptronModel(object):
         Returns: a node containing a single number (the score)
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 1 parte 1/3
+        # EXERCISE 1 part 1/3
         # PERCEPTRON 
 
         dotProduct = nn.DotProduct(x, self.w)
@@ -40,7 +40,7 @@ class PerceptronModel(object):
         Returns: 1 or -1
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 1 parte 2/3
+        # EXERCISE 1 part 2/3
         # PERCEPTRON 
 
         dotProduct = self.run(x)
@@ -56,14 +56,14 @@ class PerceptronModel(object):
         Train the perceptron until convergence.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 1 parte 3/3
+        # EXERCISE 1 part 3/3
         # PERCEPTRON 
 
-        numberWrong = 1 # Poner a 1 sólo para entrar en un bucle
+        numberWrong = 1 # I set to 1 only to enter a loop
         batchSize = 1
 
         while numberWrong > 0:
-            numberWrong = 0 # Restablece el número erróneo después de cada lote (batch)
+            numberWrong = 0 # I reset the wrong number after each batch
 
             for x, y in dataset.iterate_once(batchSize):
                 if self.get_prediction(x) != nn.as_scalar(y):
@@ -78,11 +78,12 @@ class RegressionModel(object):
     to approximate sin(x) on the interval [-2pi, 2pi] to reasonable precision.
     """
     def __init__(self):
-        # Initialize your model parameters here
+        
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 2 parte 1/4
-        # REGRESION NO LINEAL
+        # EXERCISE 2 part 1/4
+        # NON-LINEAR REGRESSION
 
+        # Initialize your model parameters here
         self.batch_size = 5
         self.w1 = nn.Parameter(1, 100)
         self.w2 = nn.Parameter(100, 1)
@@ -99,8 +100,8 @@ class RegressionModel(object):
             A node with shape (batch_size x 1) containing predicted y-values
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 2 parte 2/4
-        # REGRESION NO LINEAL
+        # EXERCISE 2 part 2/4
+        # NON-LINEAR REGRESSION
 
         relu = nn.ReLU(nn.AddBias(nn.Linear(x, self.w1), self.b1))
         predicted_y = nn.Linear(relu, self.w2)
@@ -118,8 +119,8 @@ class RegressionModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 2 parte 3/4
-        # REGRESION NO LINEAL
+        # EXERCISE 2 part 3/4
+        # NON-LINEAR REGRESSION
 
         return nn.SquareLoss(self.run(x), y)
 
@@ -128,18 +129,19 @@ class RegressionModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 2 parte 4/4
-        # REGRESION NO LINEAL
+        # EXERCISE 2 part 4/4
+        # NON-LINEAR REGRESSION
 
+        # If it is the correct prediction: 
         while True:
             
-            # Si es la predicción correcta. Por lo tanto, la actualización si el perceptrón se equivoca
+            # So, the update if the perceptron gets it wrong
             for x, y in dataset.iterate_once(self.batch_size):
 
-                # crear un objeto de pérdida
+                # We create a loss object
                 loss = self.get_loss(x, y)
 
-                #  hacer un gradiente basado en la pérdida con respecto a los parámetros
+                # We make a gradient based on the loss with respect to the parameters
                 gradient = nn.gradients(loss, [self.w1, self.b1, self.w2])
 
                 self.w1.update(gradient[0], -self.lr)
@@ -165,19 +167,17 @@ class DigitClassificationModel(object):
     working on this part of the project.)
     """
     def __init__(self):
-        # Initialize your model parameters here
+        
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 3 parte 1/3
-        # CLASIFICACIÓN DE DÍGITOS
+        # EXERCISE 3 part 1/4
+        # CLASSIFICATION OF DIGITS
 
-        # Aunque no lo pone en la practica hay que añadir esto de nuevo para que funcione
-        self.batch_size = 10
-
+        # Initialize your model parameters here
+        self.batch_size = 5 
         self.w1 = nn.Parameter(784, 300)
         self.w2 = nn.Parameter(300, 10)
         self.b1 = nn.Parameter(1, 300)
-        self.lr = .13
-        #self.b2 = nn.Parameter(1, 10)
+        self.lr = 0.13
 
     def run(self, x):
         """
@@ -194,8 +194,8 @@ class DigitClassificationModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 3 parte 2/3
-        # CLASIFICACION DE DIGITOS
+        # EXERCISE 3 part 2/4
+        # CLASSIFICATION OF DIGITS
 
         relu = nn.ReLU(nn.AddBias(nn.Linear(x, self.w1), self.b1))
         predicted_y = nn.Linear(relu, self.w2)
@@ -216,9 +216,8 @@ class DigitClassificationModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 3 parte 3/3
-        # CLASIFICACION DE DIGITOS
-        # Esta parte no la pide expresamente en la práctica pero creo que tengo que añadirla
+        # EXERCISE 3 part 3/4
+        # CLASSIFICATION OF DIGITS
 
         return nn.SoftmaxLoss(self.run(x), y)
 
@@ -227,11 +226,19 @@ class DigitClassificationModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
-        # Es parte del ejercicio 3 pero no siempre hae falta creo
+        # EXERCISE 3 part 4/4
+        # CLASSIFICATION OF DIGITS
 
+        # If it is the correct prediction: 
         while True:
+
+            # So, the update if the perceptron gets it wrong
             for x, y in dataset.iterate_once(self.batch_size):
+
+                # We create a loss object
                 loss = self.get_loss(x, y)
+
+                # We make a gradient based on the loss with respect to the parameters
                 gradient = nn.gradients(loss, [self.w1, self.b1, self.w2])
 
                 self.w1.update(gradient[0], -self.lr)
@@ -259,12 +266,12 @@ class LanguageIDModel(object):
         self.num_chars = 47
         self.languages = ["English", "Spanish", "Finnish", "Dutch", "Polish"]
 
-        # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 4 parte 1/4
-        # IDENTIFICACION LINGUISTICA
+        # EXERCISE 4 part 1/4
+        # LINGUISTIC IDENTIFICATION
 
-        self.lr = .12
+        # Initialize your model parameters here
+        self.lr = 0.12
         self.b1 = nn.Parameter(1, 200)
         self.w1 = nn.Parameter(self.num_chars, 200)
 
@@ -304,15 +311,13 @@ class LanguageIDModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 4 parte 2/4
-        # IDENTIFICACION LINGUISTICA
+        # EXERCISE 4 part 2/4
+        # LINGUISTIC IDENTIFICATION
 
         h = nn.AddBias(nn.Linear(xs[0], self.w1), self.b1)
 
         for x in xs[1:]:
-            # x: shape batch_size x self.num_chars
             temp = nn.Add(nn.Linear(x, self.w1), nn.Linear(h, self.w_h1))
-            #temp2 = nn.AddBias(nn.Add(temp, nn.Linear(h, self.w_h2)), self.b_h1)
             h = nn.ReLU(nn.AddBias(temp, self.b_h1))
 
         return nn.Linear(h, self.out)
@@ -332,8 +337,8 @@ class LanguageIDModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 4 parte 3/4
-        # IDENTIFICACION LINGUISTICA
+        # EXERCISE 4 part 3/4
+        # LINGUISTIC IDENTIFICATION
 
         return nn.SoftmaxLoss(self.run(xs), y)
 
@@ -342,25 +347,31 @@ class LanguageIDModel(object):
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 4 parte 4/4
-        # IDENTIFICACION LINGUISTICA
+        # EXERCISE 4 part 4/4
+        # LINGUISTIC IDENTIFICATION
 
+        # If it is the correct prediction:
         while True:
+
+            # So, the update if the perceptron gets it wrong
             for x,y in dataset.iterate_once(self.batch):
+
+                # We create a loss object
                 loss = self.get_loss(x, y)
+
+                # We make a gradient based on the loss with respect to the parameters
                 gradient = nn.gradients(loss, [self.w1, self.b1, self.w_h1, self.b_h1, self.out])
+                
                 self.w1.update(gradient[0], -self.lr)
                 self.b1.update(gradient[1], -self.lr)
                 self.w_h1.update(gradient[2], -self.lr)
-                #self.w_h2.update(gradient[3], -self.lr)
                 self.b_h1.update(gradient[3], -self.lr)
-                #self.b_h2.update(gradient[5], -self.lr)
                 self.out.update(gradient[4], -self.lr)
 
-            if dataset.get_validation_accuracy() >= .9:
+            if dataset.get_validation_accuracy() >= 0.9:
                 break
 
-            self.lr *= .97
+            self.lr = self.lr * 0.97
 
 
 
