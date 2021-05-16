@@ -144,28 +144,27 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
-        # EJERCICIO 4
-        # PRUEBA COMPLETA DE INFERENCIA EXACTA
-        # Funcionaba
+        # EXERCISE 4
+        # COMPLETE TEST OF EXACT INFERENCE
         
         minDistance = float("inf")
         closetGhostPosition = None
 
-        # Se comprueba que fantasma es el que esta más cerca
-        # Para cada distrito se comprueba que exista un fantasma vivo para encontrar al mas cercano
+        # Ghost is found to be the closest one
+        # For each district, check for a living ghost to find the nearest one.
         for ghost in livingGhostPositionDistributions:
-            temporalPosition = ghost.argMax() # Buscar que es argMax
+            temporalPosition = ghost.argMax() 
             ghostDistance = self.distancer.getDistance(pacmanPosition, temporalPosition)
 
             if ghostDistance < minDistance:
                 minDistance = ghostDistance
                 closetGhostPosition = temporalPosition
             
-        # Ahora tenemos que probar para encontrar el camino más corto hasta el fantasma
+        # Now we have to try to find the shortest way to the ghost
         pathGhost = float ("inf")
         bestAction = None
 
-        # Para cada acción legal se analiza hasta encontrar la mejor o la menos mala
+        # For each legal action it is analysed until the best or the least bad one is found
         for action in legal:
             succesorPosition = Actions.getSuccessor(pacmanPosition, action)
             temporal = self.distancer.getDistance(succesorPosition, closetGhostPosition)
@@ -175,4 +174,3 @@ class GreedyBustersAgent(BustersAgent):
                 bestAction = action
         
         return bestAction
-    #
